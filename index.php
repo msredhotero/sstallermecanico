@@ -165,13 +165,13 @@ $servicios = new Servicios();
 <br>
 <br>
 	<section style="width:700px; padding-top:10px; padding-top:60px;padding:25px;
-background-color: #ffffff; border:1px solid #101010; box-shadow: 4px 4px 5px #464646;-webkit-box-shadow: 4px 4px 5px #464646;-moz-box-shadow: 4px 4px 5px #464646;">
+background-color: #ffffff; border:1px solid #101010; box-shadow: 2px 2px 3px #333;-webkit-box-shadow: 2px 2px 3px #333;-moz-box-shadow: 2px 2px 3px #333;">
 			<div id="error" style="text-align:left; color:#666;">
             
             </div>
 
             <div align="center">
-            	<img src="imagenes/logodebase2.png">
+            	<img src="imagenes/logo-provisorio.jpg" width="60%">
 				<div align="center"><p style="color:#363636; font-size:28px;">Acceso al panel de control</p></div>
                 <br>
             </div>

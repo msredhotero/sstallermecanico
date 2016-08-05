@@ -22,25 +22,20 @@ function GUID()
 
 function login($usuario,$pass) {
 	
-	$sqlusu = "select * from usuariosregistrados where email1 = '".$usuario."'";
+	$sqlusu = "select * from dbusuarios where email = '".$usuario."'";
 
-
+$error = '';
 
 if (trim($usuario) != '' and trim($pass) != '') {
 
 $respusu = $this->query($sqlusu,0);
 
 if (mysql_num_rows($respusu) > 0) {
-	$error = '';
+	
 	
 	$idUsua = mysql_result($respusu,0,0);
-	$sqlpass = "select u.apellidoynombre,u.email1,u.nombreentidad,tu.descripcion, p.idperfil, u.idusuarioregistrado
-					FROM usuariosregistrados u 
-					inner
-					join	tipousuarios tu on tu.idtipousuario = u.reftipousuario
-					inner
-					join	perfiles p on p.reftipousuario = tu.idtipousuario
-					where   u.password = '".$pass."' and u.idusuarioregistrado = ".$idUsua;
+	$sqlpass = "select nombrecompleto,email,usuario,refroll from dbusuarios where password = '".$pass."' and idusuario = ".$idUsua;
+
 
 	$resppass = $this->query($sqlpass,0);
 	
@@ -58,28 +53,14 @@ if (mysql_num_rows($respusu) > 0) {
 	}
 	
 	if ($error == '') {
+		//die(var_dump($error));
 		session_start();
 		$_SESSION['usua_predio'] = $usuario;
 		$_SESSION['nombre_predio'] = mysql_result($resppass,0,0);
 		$_SESSION['email_predio'] = mysql_result($resppass,0,1);
 		$_SESSION['refroll_predio'] = mysql_result($resppass,0,3);
-		$_SESSION['idroll_predio'] = mysql_result($resppass,0,4);
-		$_SESSION['idusuario'] = mysql_result($resppass,0,5);
 		
-		
-		//////////////// EN CASO DE NECESITAR ENTRAR POR EMPRESA ///////////////////////////////////////
-		/*
-		if ($idempresa != '') {
-		$sqlEmpresa = "select razonsocial from dbempresas where idempresa =".$idempresa;
-		$resEmpresa = $this->query($sqlEmpresa,0);
-		
-		$_SESSION['usua_idempresa'] = $idempresa;
-		$_SESSION['usua_empresa'] = mysql_result($resEmpresa,0,0);
-		} else {
-			$_SESSION['usua_idempresa'] = 0;
-			$_SESSION['usua_empresa'] = 'Debe Cargar una Empresa!';
-		}
-		*/
+		return '';
 	}
 	
 }	else {

@@ -7,7 +7,7 @@ class ServiciosHTML {
 
 function menu($usuario,$titulo,$rol,$empresa) {
 	
-	$sql = "select idmenu,url,icono, nombre, permiso from menu where permiso like '%".$rol."%' order by orden";
+	$sql = "select idmenu,url,icono, nombre, permiso from predio_menu where permiso like '%".$rol."%' order by orden";
 	$res = $this->query($sql,0);
 	
 	$cadmenu = "";
@@ -44,7 +44,7 @@ function menu($usuario,$titulo,$rol,$empresa) {
 			
 			<ul class="list-inline">
 				<li><span class="glyphicon glyphicon-user"></span> '.$usuario.'</li>
-				
+
 			</ul>
 		</div>
 		 
@@ -53,8 +53,9 @@ function menu($usuario,$titulo,$rol,$empresa) {
 		</div> 
 	
 		<div id="navigation" >
-			<img src="../imagenes/caracol_bg.png"/ style="padding-bottom:5%;" width="90%">
-			
+			<div align="center">
+			<img src="../imagenes/dash_logo.png"/ style="padding-bottom:5%;" width="30%">
+			</div>
 				<nav class="nav">
 					<ul>
 						'.utf8_encode($cadmenu).'

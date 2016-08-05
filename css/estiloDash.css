@@ -2,13 +2,14 @@
 * {
   margin:0;
   padding:0;
+  font-family: robotoL;
 }
-
+html { height : 101%; } 
 body {
 
-	background:url(../imagenes/bgdash.jpg) repeat;
 
-/*background:#FFF;*/
+	font-family: robotoL;
+	background:#f1f1f1;
 }
 
 #content {
@@ -130,11 +131,10 @@ padding-bottom: 10px;
 }
 
 
-/*004b99 nuevo */ 
-/*248dc1 viejo:  */ 
+
 #navigation {
 			height:100%;
-			background-color: #004b99;
+			background-color: #303641;
 			padding-top:15px;
 			overflow-y: auto;
 			position: fixed;
@@ -149,13 +149,13 @@ padding-bottom: 10px;
 			text-align:center;
 			color: #7A0000;
 			font-size:2.0em;
-			font-family:Bebas;	
+			font-family: robotoL;	
 		}
 		
 		#navigation #mobile-header p {
 			color: #fff;
 			font-size:1em;
-			font-family:  "Courier New", Courier, monospace;
+			font-family:  robotoL;
 		}
 		
 		.todoMenu {
@@ -170,21 +170,25 @@ padding-bottom: 10px;
 			list-style:none;
 		}
 		.nav ul li {
-			padding-top:15px;
-			padding:8px;
+			padding:8px 8px;
+			height:44px;
+			border-bottom:1px solid #3e444e;
+			border-top:1px solid #303641;
 			width:100%;
 		}
 		
 		.nav ul li a {
 			color:#FFF;
-			/*font-family: "Coolvetica Rg";*/
-			font-size:1.4em;
+			font-family:robotoL;
+			font-size:1.0em;
 			text-decoration:none;
-			width:100%;
+			/*width:100%;*/
+			float: left;
+			margin-top:5px;
 		}
 		
 		.nav ul li:hover {
-			background: #0e6390; /* Old browsers */
+			background: #2b303a; /* Old browsers */
 			text-indent:15px;
 			-webkit-transition:all 1s ease;
 		    -moz-transition:all 1s ease;
@@ -220,8 +224,8 @@ padding-bottom: 10px;
 		
 		#infoMenu p {	
 			color: #000;
-			font-family: "Coolvetica Rg";
-			font-size:16px;
+			font-family: robotoL;
+			font-size:15px;
 		}
 		
 		#infoDescrMenu {
@@ -233,115 +237,274 @@ padding-bottom: 10px;
 		}
 		
 		.icodashboard {
-			background:url(../imagenes/iconmenu/dashboard.png) no-repeat;
+			background:url(../imagenes/iconmenu/dashboard.png)  no-repeat;
 			background-position: center center;
 			width:40px;
-			height:25px;
+			height:40px;
 			float:left;
 			margin-right:9px;
+			margin-top:-4px;
+			/* OKAY */
+		   background-size: 25px 50px;
+		   background-size: 50% 50%;
 		}
 		
 		.icousuarios {
 			background:url(../imagenes/iconmenu/usuarios.png) no-repeat;
 			background-position: center center;
 			width:40px;
-			height:25px;
+			height:40px;
 			float:left;
 			margin-right:10px;
+			margin-top:-4px;
+			/* OKAY */
+		   background-size: 25px 50px;
+		   background-size: 50% 50%;
 		}
 		
 		.icochart {
 			background:url(../imagenes/iconmenu/chart.png) no-repeat;
 			background-position: center center;
 			width:40px;
-			height:25px;
+			height:40px;
 			float:left;
 			margin-right:10px;
+			margin-top:-4px;
+			/* OKAY */
+		   background-size: 25px 50px;
+		   background-size: 50% 50%;
+		}
+		
+		.icopagos {
+			background:url(../imagenes/iconmenu/pagos.png) no-repeat;
+			background-position: center center;
+			width:40px;
+			height:40px;
+			float:left;
+			margin-right:10px;
+			margin-top:-4px;
+			/* OKAY */
+		   background-size: 25px 50px;
+		   background-size: 50% 50%;
+		}
+		
+		.icosedes {
+			background:url(../imagenes/iconmenu/sedes.png) no-repeat;
+			background-position: center center;
+			width:40px;
+			height:40px;
+			float:left;
+			margin-right:10px;
+			margin-top:-4px;
+			/* OKAY */
+		   background-size: 25px 50px;
+		   background-size: 50% 50%;
+		}
+		
+		.icocanchas {
+			background:url(../imagenes/iconmenu/canchas.png) no-repeat;
+			background-position: center center;
+			width:40px;
+			height:40px;
+			float:left;
+			margin-right:10px;
+			margin-top:-4px;
+			/* OKAY */
+		   background-size: 25px 50px;
+		   background-size: 50% 50%;
 		}
 		
 		.icogoleadores {
 			background:url(../imagenes/iconmenu/gym15.png) no-repeat;
 			background-position: center center;
 			width:25px;
-			height:25px;
+			height:40px;
 			float:left;
 			margin-right:10px;
+			margin-top:-4px;
+			/* OKAY */
+		   background-size: 25px 50px;
+		   background-size: 50% 50%;
 		}
 		
 		.icosuspendidos {
 			background:url(../imagenes/iconmenu/lightning38.png) no-repeat;
 			background-position: center center;
 			width:40px;
-			height:25px;
+			height:40px;
 			float:left;
 			margin-right:10px;
+			margin-top:-4px;
+			/* OKAY */
+		   background-size: 25px 50px;
+		   background-size: 50% 50%;
 		}
 		.icojugadores {
 			background:url(../imagenes/iconmenu/user82.png) no-repeat;
 			background-position: center center;
 			width:40px;
-			height:25px;
+			height:40px;
 			float:left;
 			margin-right:10px;
+			margin-top:-4px;
+			/* OKAY */
+		   background-size: 25px 50px;
+		   background-size: 50% 50%;
 		}
+		
+		.icovehiculos {
+			background:url(../imagenes/iconmenu/icovehiculo.png) no-repeat;
+			background-position: center center;
+			width:40px;
+			height:40px;
+			float:left;
+			margin-right:10px;
+			margin-top:-4px;
+			/* OKAY */
+		   background-size: 25px 50px;
+		   background-size: 50% 50%;
+		}
+		
+		
+		.icoreparacion {
+			background:url(../imagenes/iconmenu/icoreparacion.png) no-repeat;
+			background-position: center center;
+			width:40px;
+			height:40px;
+			float:left;
+			margin-right:10px;
+			margin-top:-4px;
+			/* OKAY */
+		   background-size: 25px 50px;
+		   background-size: 50% 50%;
+		}
+		
+		.icomodelo {
+			background:url(../imagenes/iconmenu/icomodelo.png) no-repeat;
+			background-position: center center;
+			width:40px;
+			height:40px;
+			float:left;
+			margin-right:10px;
+			margin-top:-4px;
+			/* OKAY */
+		   background-size: 25px 50px;
+		   background-size: 50% 50%;
+		}
+		
+		
+		.icomarca {
+			background:url(../imagenes/iconmenu/icomarca.png) no-repeat;
+			background-position: center center;
+			width:40px;
+			height:40px;
+			float:left;
+			margin-right:10px;
+			margin-top:-4px;
+			/* OKAY */
+		   background-size: 25px 50px;
+		   background-size: 50% 50%;
+		}
+		
 		.icoamonestados {
 			background:url(../imagenes/iconmenu/user84.png) no-repeat;
 			background-position: center center;
 			width:25px;
-			height:25px;
+			height:40px;
 			float:left;
 			margin-right:10px;
+			margin-top:-4px;
+			/* OKAY */
+		   background-size: 25px 50px;
+		   background-size: 50% 50%;
 		}
 		.icoequipos {
 			background:url(../imagenes/iconmenu/users6.png) no-repeat;
 			background-position: center center;
 			width:40px;
-			height:25px;
+			height:40px;
 			float:left;
 			margin-right:10px;
+			margin-top:-4px;
+			/* OKAY */
+		   background-size: 25px 50px;
+		   background-size: 50% 50%;
 		}
 		.icozonasequipos {
 			background:url(../imagenes/iconmenu/users7.png) no-repeat;
 			background-position: center center;
 			width:40px;
-			height:25px;
+			height:40px;
 			float:left;
 			margin-right:10px;
+			margin-top:-4px;
+			/* OKAY */
+		   background-size: 25px 50px;
+		   background-size: 50% 50%;
 		}
 		.icotorneos {
 			background:url(../imagenes/iconmenu/verification5.png) no-repeat;
 			background-position: center center;
 			width:40px;
-			height:25px;
+			height:40px;
 			float:left;
 			margin-right:10px;
+			margin-top:-4px;
+			/* OKAY */
+		   background-size: 25px 50px;
+		   background-size: 50% 50%;
 		}
 		
 		.icozonas {
 			background:url(../imagenes/iconmenu/conceptos.png) no-repeat;
 			background-position: center center;
 			width:40px;
-			height:25px;
+			height:40px;
 			float:left;
 			margin-right:10px;
+			margin-top:-4px;
+			/* OKAY */
+		   background-size: 25px 50px;
+		   background-size: 50% 50%;
 		}
 		
 		.icofixture {
 			background:url(../imagenes/iconmenu/novedades.png) no-repeat;
 			background-position: center center;
 			width:40px;
-			height:25px;
+			height:40px;
 			float:left;
 			margin-right:10px;
+			margin-top:-4px;
+			/* OKAY */
+		   background-size: 25px 50px;
+		   background-size: 50% 50%;
+		}
+		
+		.icoplayoff {
+			background:url(../imagenes/iconmenu/playoff.png) no-repeat;
+			background-position: center center;
+			width:40px;
+			height:40px;
+			float:left;
+			margin-right:10px;
+			margin-top:-4px;
+			/* OKAY */
+		   background-size: 25px 50px;
+		   background-size: 50% 50%;
 		}
 		
 		.icofairplay {
 			background:url(../imagenes/iconmenu/exportar.png) no-repeat;
 			background-position: center center;
 			width:40px;
-			height:25px;
+			height:40px;
 			float:left;
 			margin-right:10px;
+			margin-top:-4px;
+			/* OKAY */
+		   background-size: 25px 50px;
+		   background-size: 50% 50%;
 		}
 		/*
 		gym15.png
@@ -356,90 +519,104 @@ padding-bottom: 10px;
 			background:url(../imagenes/iconmenu/alquiler.png) no-repeat;
 			background-position: center center;
 			width:40px;
-			height:25px;
+			height:40px;
 			float:left;
 			margin-right:10px;
+			margin-top:-4px;
+			/* OKAY */
+		   background-size: 25px 50px;
+		   background-size: 50% 50%;
 		}
 		
 		.icoinmubles {
 			background:url(../imagenes/iconmenu/inmueble.png) no-repeat;
 			background-position: center center;
 			width:40px;
-			height:25px;
+			height:40px;
 			float:left;
 			margin-right:10px;
+			margin-top:-4px;
+			/* OKAY */
+		   background-size: 25px 50px;
+		   background-size: 50% 50%;
 		}
 		
 		.icoturnos {
 			background:url(../imagenes/iconmenu/turnos.png) no-repeat;
 			background-position: center center;
 			width:40px;
-			height:25px;
+			height:40px;
 			float:left;
 			margin-right:10px;
+			margin-top:-4px;
+			/* OKAY */
+		   background-size: 25px 50px;
+		   background-size: 50% 50%;
 		}
 		
 		.icoventas {
 			background:url(../imagenes/iconmenu/compras.png) no-repeat;
 			background-position: center center;
 			width:40px;
-			height:25px;
+			height:40px;
 			float:left;
 			margin-right:10px;
-		}
-		
-		.icopagos {
-			background:url(../imagenes/iconmenu/pagos.png) no-repeat;
-			background-position: center center;
-			width:40px;
-			height:25px;
-			float:left;
-			margin-right:10px;
+			margin-top:-4px;
+			/* OKAY */
+		   background-size: 25px 50px;
+		   background-size: 50% 50%;
 		}
 		
 		.icoproductos {
 			background:url(../imagenes/iconmenu/barras.png) no-repeat;
 			background-position: center center;
 			width:40px;
-			height:25px;
+			height:40px;
 			float:left;
 			margin-right:10px;
+			margin-top:-4px;
+			/* OKAY */
+		   background-size: 25px 50px;
+		   background-size: 50% 50%;
 		}
 		
 		.icoreportes {
 			background:url(../imagenes/iconmenu/reportes.png) no-repeat;
 			background-position: center center;
 			width:40px;
-			height:25px;
+			height:40px;
 			float:left;
 			margin-right:10px;
+			margin-top:-4px;
+			/* OKAY */
+		   background-size: 25px 50px;
+		   background-size: 50% 50%;
 		}
 		
 		.icocontratos {
 			background:url(../imagenes/iconmenu/contratos.png) no-repeat;
 			background-position: center center;
 			width:40px;
-			height:25px;
+			height:40px;
 			float:left;
 			margin-right:10px;
-		}
-		
-		.icoclientes {
-			background:url(../imagenes/iconmenu/user84.png) no-repeat;
-			background-position: center center;
-			width:40px;
-			height:25px;
-			float:left;
-			margin-right:10px;
+			margin-top:-4px;
+			/* OKAY */
+		   background-size: 25px 50px;
+		   background-size: 50% 50%;
 		}
 		
 		.icosalir {
 			background:url(../imagenes/iconmenu/salir.png) no-repeat;
 			background-position: center center;
 			width:40px;
-			height:25px;
+			height:40px;
 			float:left;
 			margin-right:10px;
+			margin-top:-4px;
+			/* OKAY */
+		   background-size: 25px 50px;
+		   background-size: 50% 50%;
 		}
 		
 		.icoproductos2 {
@@ -452,28 +629,19 @@ padding-bottom: 10px;
 			cursor:pointer;
 		}
 		
-		.icopagos2 {
-			background:url(../imagenes/iconmenu/pagos.png) no-repeat;
-			background-position: center center;
-			width:40px;
-			height:25px;
-			margin-right:9px;
-			margin-bottom:25px;
-			cursor:pointer;
-		}
-		
-		.icoclientes2 {
-			background:url(../imagenes/iconmenu/user84.png) no-repeat;
-			background-position: center center;
-			width:40px;
-			height:25px;
-			margin-right:9px;
-			margin-bottom:25px;
-			cursor:pointer;
-		}
-		
 		.icoventas2 {
 			background:url(../imagenes/iconmenu/compras.png) no-repeat;
+			background-position: center center;
+			width:40px;
+			height:25px;
+			margin-right:9px;
+			margin-bottom:25px;
+			cursor:pointer;
+		}
+		
+		
+		.icopagos2 {
+			background:url(../imagenes/iconmenu/pagos.png) no-repeat;
 			background-position: center center;
 			width:40px;
 			height:25px;
@@ -573,299 +741,6 @@ padding-bottom: 10px;
 			cursor:pointer;
 		}
 		
-		.icovaloracion {
-			background:url(../imagenes/iconmenu/valoracion.png) no-repeat;
-			background-position: center center;
-			width:40px;
-			height:25px;
-			float:left;
-			margin-right:10px;
-		}
-		
-		.icovaloracion2 {
-			background:url(../imagenes/iconmenu/valoracion.png) no-repeat;
-			background-position: center center;
-			width:40px;
-			height:25px;
-			margin-right:10px;
-			margin-bottom:25px;
-			cursor:pointer;
-		}
-		
-		
-		.icocomisiones {
-			background:url(../imagenes/iconmenu/comisiones.png) no-repeat;
-			background-position: center center;
-			width:40px;
-			height:25px;
-			float:left;
-			margin-right:10px;
-		}
-		
-		.icocomisiones2 {
-			background:url(../imagenes/iconmenu/comisiones.png) no-repeat;
-			background-position: center center;
-			width:40px;
-			height:25px;
-			margin-right:10px;
-			margin-bottom:25px;
-			cursor:pointer;
-		}
-		
-		
-		.icotipoinformacion {
-			background:url(../imagenes/iconmenu/tipoinformacion.png) no-repeat;
-			background-position: center center;
-			width:40px;
-			height:25px;
-			float:left;
-			margin-right:10px;
-		}
-		
-		.icotipoinformacion2 {
-			background:url(../imagenes/iconmenu/tipoinformacion.png) no-repeat;
-			background-position: center center;
-			width:40px;
-			height:25px;
-			margin-right:10px;
-			margin-bottom:25px;
-			cursor:pointer;
-		}
-		
-		.icoperfiles {
-			background:url(../imagenes/iconmenu/perfiles.png) no-repeat;
-			background-position: center center;
-			width:40px;
-			height:25px;
-			float:left;
-			margin-right:10px;
-		}
-		
-		.icoperfiles2 {
-			background:url(../imagenes/iconmenu/perfiles.png) no-repeat;
-			background-position: center center;
-			width:40px;
-			height:25px;
-			margin-right:10px;
-			margin-bottom:25px;
-			cursor:pointer;
-		}
-		
-		
-		.icociudad {
-			background:url(../imagenes/iconmenu/ciudad.png) no-repeat;
-			background-position: center center;
-			width:40px;
-			height:25px;
-			float:left;
-			margin-right:10px;
-		}
-		
-		.icociudad2 {
-			background:url(../imagenes/iconmenu/ciudad.png) no-repeat;
-			background-position: center center;
-			width:40px;
-			height:25px;
-			margin-right:10px;
-			margin-bottom:25px;
-			cursor:pointer;
-		}
-		
-		.icousos {
-			background:url(../imagenes/iconmenu/usos.png) no-repeat;
-			background-position: center center;
-			width:40px;
-			height:25px;
-			float:left;
-			margin-right:10px;
-		}
-		
-		.icousos2 {
-			background:url(../imagenes/iconmenu/usos.png) no-repeat;
-			background-position: center center;
-			width:40px;
-			height:25px;
-			margin-right:10px;
-			margin-bottom:25px;
-			cursor:pointer;
-		}
-		
-		
-		.icopaises {
-			background:url(../imagenes/iconmenu/paises.png) no-repeat;
-			background-position: center center;
-			width:40px;
-			height:25px;
-			float:left;
-			margin-right:10px;
-		}
-		
-		.icopaises2 {
-			background:url(../imagenes/iconmenu/paises.png) no-repeat;
-			background-position: center center;
-			width:40px;
-			height:25px;
-			margin-right:10px;
-			margin-bottom:25px;
-			cursor:pointer;
-		}
-		
-		.icoinmuebles1 {
-			background:url(../imagenes/iconmenu/inmuebles1.png) no-repeat;
-			background-position: center center;
-			width:40px;
-			height:25px;
-			float:left;
-			margin-right:10px;
-		}
-		
-		.icoinmuebles12 {
-			background:url(../imagenes/iconmenu/inmuebles1.png) no-repeat;
-			background-position: center center;
-			width:40px;
-			height:25px;
-			margin-right:10px;
-			margin-bottom:25px;
-			cursor:pointer;
-		}
-		
-		
-		.icocostosnacional {
-			background:url(../imagenes/iconmenu/costosnacional.png) no-repeat;
-			background-position: center center;
-			width:40px;
-			height:25px;
-			float:left;
-			margin-right:10px;
-		}
-		
-		.icocostosnacional2 {
-			background:url(../imagenes/iconmenu/costosnacional.png) no-repeat;
-			background-position: center center;
-			width:40px;
-			height:25px;
-			margin-right:10px;
-			margin-bottom:25px;
-			cursor:pointer;
-		}
-		
-		.icotipovivienda {
-			background:url(../imagenes/iconmenu/tipovivienda.png) no-repeat;
-			background-position: center center;
-			width:40px;
-			height:25px;
-			float:left;
-			margin-right:10px;
-		}
-		
-		.icotipovivienda2 {
-			background:url(../imagenes/iconmenu/tipovivienda.png) no-repeat;
-			background-position: center center;
-			width:40px;
-			height:25px;
-			margin-right:10px;
-			margin-bottom:25px;
-			cursor:pointer;
-		}
-		
-		
-		.icourbanizacion {
-			background:url(../imagenes/iconmenu/urbanizacion.png) no-repeat;
-			background-position: center center;
-			width:40px;
-			height:25px;
-			float:left;
-			margin-right:10px;
-		}
-		
-		.icourbanizacion2 {
-			background:url(../imagenes/iconmenu/urbanizacion.png) no-repeat;
-			background-position: center center;
-			width:40px;
-			height:25px;
-			margin-right:10px;
-			margin-bottom:25px;
-			cursor:pointer;
-		}
-		
-		.icoprovincias {
-			background:url(../imagenes/iconmenu/provincias.png) no-repeat;
-			background-position: center center;
-			width:40px;
-			height:25px;
-			float:left;
-			margin-right:10px;
-		}
-		
-		.icoprovincias2 {
-			background:url(../imagenes/iconmenu/provincias.png) no-repeat;
-			background-position: center center;
-			width:40px;
-			height:25px;
-			margin-right:10px;
-			margin-bottom:25px;
-			cursor:pointer;
-		}
-		
-		
-		.icocostosmts {
-			background:url(../imagenes/iconmenu/costosmts.png) no-repeat;
-			background-position: center center;
-			width:40px;
-			height:25px;
-			float:left;
-			margin-right:10px;
-		}
-		
-		.icocostosmts2 {
-			background:url(../imagenes/iconmenu/costosmts.png) no-repeat;
-			background-position: center center;
-			width:40px;
-			height:25px;
-			margin-right:10px;
-			margin-bottom:25px;
-			cursor:pointer;
-		}
-		
-		.icosituacioninmueble {
-			background:url(../imagenes/iconmenu/situacioninmueble.png) no-repeat;
-			background-position: center center;
-			width:40px;
-			height:25px;
-			float:left;
-			margin-right:10px;
-		}
-		
-		.icosituacioninmueble2 {
-			background:url(../imagenes/iconmenu/situacioninmueble.png) no-repeat;
-			background-position: center center;
-			width:40px;
-			height:25px;
-			margin-right:10px;
-			margin-bottom:25px;
-			cursor:pointer;
-		}
-		
-		
-		.icosituaciones {
-			background:url(../imagenes/iconmenu/situaciones.png) no-repeat;
-			background-position: center center;
-			width:40px;
-			height:25px;
-			float:left;
-			margin-right:10px;
-		}
-		
-		.icosituaciones2 {
-			background:url(../imagenes/iconmenu/situaciones.png) no-repeat;
-			background-position: center center;
-			width:40px;
-			height:25px;
-			margin-right:10px;
-			margin-bottom:25px;
-			cursor:pointer;
-		}
-		
 		
 		.ulHober {
 			list-style:none;
@@ -883,7 +758,7 @@ padding-bottom: 10px;
 		   background: #c0df71;
 		   color: #fff;
 		   border-radius:10px;
-		   font-family: "Lucida Grande", Lucida, Verdana, sans-serif;
+		   font-family:  Verdana, sans-serif;
 		   padding: 10px;
 		   margin-top: -10px;
 		   margin-left: 20px;
@@ -939,38 +814,11 @@ padding-bottom: 10px;
 			}
 			
 	.boxInfoLargo{ 
-				width: auto; 
+				width: 96%; 
 				height: auto; 
 				margin-top:30px;
 				margin-bottom:30px;
 				min-width: 800px;
-				float:left; 
-				background:#fff; 
-				z-index:-1;
-				overflow: hidden; 
-				position: relative; 
-				margin-right:15px;
-				/*opacity: 0.9;
-  				filter:  alpha(opacity=90);
-				box-shadow: 2px 2px 5px #0e6390;
-				-webkit-box-shadow: 2px 2px 5px #0e6390;
-  				-moz-box-shadow: 2px 2px 5px #0e6390;
-  				filter: shadow(color=#0e6390, direction=135, strength=2);*/
-				/*border-top-left-radius: 16px;
- 				border-top-right-radius: 16px;
-				-moz-border-radius-topright: 16px;
-				-moz-border-radius-topleft: 16px;*/
-
-
-			}
-			
-	.boxInfoLargo2{ 
-				width: 100%; 
-				/*max-width:950px;*/
-				min-width:650px;
-				height: auto; 
-				margin-top:30px;
-				margin-bottom:30px;
 				float:left; 
 				background:#fff; 
 				z-index:-1;
@@ -996,7 +844,7 @@ padding-bottom: 10px;
 	}
 
 	#headBoxInfo {
-		background-color:#004b99;
+		background-color:#303641;
 		padding:6px; 
 		height:36px;
 	}
@@ -1016,6 +864,26 @@ padding-bottom: 10px;
 	color:#333;
 }
   
-  
 
+.tile-stats.tile-white {
+    border: 1px solid #ebebeb;
+}
+.tile-stats.stat-tile {
+    border: medium none !important;
+    box-shadow: 0 1px 1px rgba(0, 0, 0, 0.1);
+    padding: 0;
+}
+.tile-stats {
+    border-radius: 5px;
+    display: block;
+    margin-bottom: 10px;
+    overflow: hidden;
+    position: relative;
+    transition: all 300ms ease-in-out 0s;
+}
+
+@font-face {
+  font-family: "robotoL";
+  src: url("../fuentes/Roboto-Bold.ttf");
+}
 
