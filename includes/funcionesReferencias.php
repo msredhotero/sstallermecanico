@@ -239,45 +239,77 @@ return $res;
 
 
 
+
 /* PARA Ordenes */
 
-function insertarOrdenes($numero,$refclientevehiculo,$fechacrea,$fechamodi,$usuacrea,$usuamodi,$detallereparacion) {
-$sql = "insert into dbordenes(idorden,numero,refclientevehiculo,fechacrea,fechamodi,usuacrea,usuamodi,detallereparacion)
-values ('','".utf8_decode($numero)."',".$refclientevehiculo.",'".utf8_decode($fechacrea)."','".utf8_decode($fechamodi)."','".utf8_decode($usuacrea)."','".utf8_decode($usuamodi)."','".utf8_decode($detallereparacion)."')";
-$res = $this->query($sql,1);
-return $res;
-}
+function insertarOrdenes($numero,$refclientevehiculo,$fechacrea,$fechamodi,$usuacrea,$usuamodi,$refestado,$detallereparacion) { 
+$sql = "insert into dbordenes(idorden,numero,refclientevehiculo,fechacrea,fechamodi,usuacrea,usuamodi,refestado,detallereparacion) 
+values ('','".utf8_decode($numero)."',".$refclientevehiculo.",'".utf8_decode($fechacrea)."','".utf8_decode($fechamodi)."','".utf8_decode($usuacrea)."','".utf8_decode($usuamodi)."',".$refestado.",'".utf8_decode($detallereparacion)."')";
+$res = $this->query($sql,1); 
+return $res; 
+} 
 
 
-function modificarOrdenes($id,$numero,$refclientevehiculo,$fechacrea,$fechamodi,$usuacrea,$usuamodi,$detallereparacion) {
-$sql = "update dbordenes
-set
-numero = '".utf8_decode($numero)."',refclientevehiculo = ".$refclientevehiculo.",fechacrea = '".utf8_decode($fechacrea)."',fechamodi = '".utf8_decode($fechamodi)."',usuacrea = '".utf8_decode($usuacrea)."',usuamodi = '".utf8_decode($usuamodi)."',detallereparacion = '".utf8_decode($detallereparacion)."'
-where idorden =".$id;
-$res = $this->query($sql,0);
-return $res;
-}
+function modificarOrdenes($id,$numero,$refclientevehiculo,$fechacrea,$fechamodi,$usuacrea,$usuamodi,$refestado,$detallereparacion) { 
+$sql = "update dbordenes 
+set 
+numero = '".utf8_decode($numero)."',refclientevehiculo = ".$refclientevehiculo.",fechacrea = '".utf8_decode($fechacrea)."',fechamodi = '".utf8_decode($fechamodi)."',usuacrea = '".utf8_decode($usuacrea)."',usuamodi = '".utf8_decode($usuamodi)."',refestado = ".$refestado.",detallereparacion = '".utf8_decode($detallereparacion)."' 
+where idorden =".$id; 
+$res = $this->query($sql,0); 
+return $res; 
+} 
 
 
-function eliminarOrdenes($id) {
-$sql = "delete from dbordenes where idorden =".$id;
-$res = $this->query($sql,0);
-return $res;
-}
+function eliminarOrdenes($id) { 
+$sql = "delete from dbordenes where idorden =".$id; 
+$res = $this->query($sql,0); 
+return $res; 
+} 
 
 
-function traerOrdenes() {
-$sql = "select idorden,numero,refclientevehiculo,fechacrea,fechamodi,usuacrea,usuamodi,detallereparacion from dbordenes order by 1";
-$res = $this->query($sql,0);
-return $res;
-}
+function traerOrdenes() { 
+$sql = "SELECT 
+			idorden,
+			numero,
+			c.apellido,
+			c.nombre,
+			v.patente,
+			m.marca,
+			mo.modelo,
+			fechacrea,
+			fechamodi,
+			usuacrea,
+			usuamodi,
+			e.estado,
+			detallereparacion,
+			o.refestado,
+			o.refclientevehiculo
+		FROM
+			dbordenes o
+				INNER JOIN
+			tbestados e ON e.idestado = o.refestado
+				INNER JOIN
+			dbclientevehiculos cv ON cv.idclientevehiculo = o.refclientevehiculo
+				INNER JOIN
+			dbclientes c ON c.idcliente = cv.refcliente
+				INNER JOIN
+			dbvehiculos v ON v.idvehiculo = cv.refvehiculo
+				INNER JOIN
+			tbmodelo mo ON mo.idmodelo = v.refmodelo
+				INNER JOIN
+			tbmarca m ON m.idmarca = mo.refmarca
+				
+		ORDER BY 1"; 
+$res = $this->query($sql,0); 
+return $res; 
+} 
 
 
-function traerOrdenesPorId($id) {
-$sql = "select idorden,numero,refclientevehiculo,fechacrea,fechamodi,usuacrea,usuamodi,detallereparacion from dbordenes where idorden =".$id;
-$res = $this->query($sql,0);
-return $res;
-}
+function traerOrdenesPorId($id) { 
+$sql = "select idorden,numero,refclientevehiculo,fechacrea,fechamodi,usuacrea,usuamodi,refestado,detallereparacion from dbordenes where idorden =".$id; 
+$res = $this->query($sql,0); 
+return $res; 
+} 
 
 /* Fin */
 
