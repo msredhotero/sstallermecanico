@@ -3,8 +3,8 @@
 -- http://www.phpmyadmin.net
 --
 -- Servidor: localhost
--- Tiempo de generación: 08-08-2016 a las 14:35:25
--- Versión del servidor: 5.5.24-log
+-- Tiempo de generación: 05-08-2016 a las 22:51:15
+-- Versión del servidor: 5.1.36-community-log
 -- Versión de PHP: 5.4.3
 
 SET SQL_MODE="NO_AUTO_VALUE_ON_ZERO";
@@ -66,7 +66,6 @@ CREATE TABLE IF NOT EXISTS `dbordenes` (
   `fechamodi` datetime DEFAULT NULL,
   `usuacrea` varchar(100) COLLATE utf8_spanish_ci DEFAULT NULL,
   `usuamodi` varchar(100) COLLATE utf8_spanish_ci DEFAULT NULL,
-  `refestado` int(11) NOT NULL,
   `detallereparacion` varchar(400) COLLATE utf8_spanish_ci DEFAULT NULL,
   PRIMARY KEY (`idorden`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_spanish_ci AUTO_INCREMENT=1 ;
@@ -103,6 +102,7 @@ INSERT INTO `dbusuarios` (`idusuario`, `usuario`, `password`, `refroll`, `email`
 CREATE TABLE IF NOT EXISTS `dbvehiculos` (
   `idvehiculo` int(11) NOT NULL AUTO_INCREMENT,
   `patente` varchar(10) COLLATE utf8_spanish_ci NOT NULL,
+  `refmarca` int(11) NOT NULL,
   `refmodelo` int(11) NOT NULL,
   `anio` smallint(6) NOT NULL,
   PRIMARY KEY (`idvehiculo`)
@@ -153,29 +153,6 @@ INSERT INTO `predio_menu` (`idmenu`, `url`, `icono`, `nombre`, `Orden`, `hover`,
 (20, '../modelos/', 'icomodelo', 'Modelos', 6, NULL, 'Administrador'),
 (21, '../reportes/', 'icoreportes', 'Reportes', 10, NULL, 'Administrador'),
 (22, '../usuarios/', 'icousuarios', 'Usuarios', 7, NULL, 'Administrador');
-
--- --------------------------------------------------------
-
---
--- Estructura de tabla para la tabla `tbestados`
---
-
-CREATE TABLE IF NOT EXISTS `tbestados` (
-  `idestado` int(11) NOT NULL AUTO_INCREMENT,
-  `estado` varchar(50) COLLATE utf8_spanish_ci NOT NULL,
-  PRIMARY KEY (`idestado`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_spanish_ci AUTO_INCREMENT=6 ;
-
---
--- Volcado de datos para la tabla `tbestados`
---
-
-INSERT INTO `tbestados` (`idestado`, `estado`) VALUES
-(1, 'Cancelado'),
-(2, 'Trabajando'),
-(3, 'En cola'),
-(4, 'Finalizado'),
-(5, 'Iniciado');
 
 -- --------------------------------------------------------
 
