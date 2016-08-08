@@ -32,13 +32,36 @@ function query($sql,$accion) {
 	
 }
 
+$tablasAr	= array("clientes"        => "dbclientes",        
+"clientevehiculos"=> "dbclientevehiculos",
+"ordenes"         => "dbordenes",         
+"usuarios"        => "dbusuarios",        
+"vehiculos"       => "dbvehiculos",       
+"predio_menu"     => "predio_menu",       
+"estados"         => "tbestados",         
+"marca"           => "tbmarca",           
+"modelo"          => "tbmodelo",          
+"roles"           => "tbroles",          
+"tipovehiculo"    => "tbtipovehiculo");
 
-$tabla 		= "dbordenes";
-$nombre 	= "Ordenes";
+
 $servicios	= "Referencias";
 
-$sql	=	"show columns from ".$tabla;
+$sqlMapaer	= "SHOW FULL TABLES FROM sstaller";
+$resMapeo 	=	query($sqlMapaer,0);
+
+$aliasTablaMadre = '';
+
+while ($rowM = mysql_fetch_array($resMapeo)) {
+
+$sql	=	"show columns from ".$rowM[0];
 $res 	=	query($sql,0);
+
+$aliasTablaMadre = substr(str_replace('tb','',str_replace('db','',$rowM[0])),0,1);
+
+$tabla 		= $rowM[0];
+$nombre 	= ucwords(str_replace('tb','',str_replace('db','',$rowM[0])));
+
 
 if ($res == false) {
 	return 'Error al traer datos';
@@ -81,10 +104,24 @@ if ($res == false) {
 		eliminarTorneo($serviciosJugadores);
 		break;
 	*/
+	$inner = '';
 	while ($row = mysql_fetch_array($res)) {
 		if ($row[3] == 'PRI') {
 			$clave = $row[0];			
 		} else {
+			
+			
+			// trato las tablas con referencias
+			
+			if ($row[3] == 'MUL') {
+				$TableReferencia 	= str_replace('ref','',$row[0]);
+				$sqlTR	=	"show columns from ".$tablasAr[$TableReferencia];
+				//die(var_dump($tablasAr['clientes']));
+				$resTR 	=	query($sqlTR,0);
+				$inner .= " inner join ".$tablasAr[$TableReferencia]." ".substr($TableReferencia,0,2)." ON ".substr($TableReferencia,0,2).".".mysql_result($resTR,0,0)." = ".$aliasTablaMadre.".".$row[0]." ";
+				
+			}
+			
 			
 			switch ($row[1]) {
 				case "date":
@@ -119,8 +156,10 @@ if ($res == false) {
 									} <br>
 							
 							";	
+							//$cuerpoSQL = $cuerpoSQL."(case when ".$row[0]." = 1 then 'Si' else 'No' end) as ".$row[0].",";
 						} else {
 							$cuerpoVariablePOST 	= $cuerpoVariablePOST."$".$row[0]." = "."$"."_POST['".$row[0]."']; <br>";	
+							//$cuerpoSQL = $cuerpoSQL.$row[0].",";
 						}
 						$cuerpoVariable = $cuerpoVariable.'".$'.$row[0].'.",';
 						$cuerpoVariableComunes = $cuerpoVariableComunes."$".$row[0].",";
@@ -143,6 +182,7 @@ if ($res == false) {
 	$cuerpoSQL				= substr($cuerpoSQL,0,strlen($cuerpoSQL)-1);
 	
 	
+	//$ajaxFuncionesController = '';
 	
 	$ajaxFuncionesController = "
 	
@@ -186,7 +226,7 @@ if ($res == false) {
 
 
 
-
+	//$includes = '';
 
 	$includes = $includes.'
 	
@@ -218,7 +258,7 @@ if ($res == false) {
 		 <br>
 		  <br>
 		function traer'.$nombre.'() { <br>
-			$sql = "select '.$clave.','.$cuerpoSQL.' from '.$tabla.' order by 1"; <br>
+			$sql = "select '.$clave.','.$cuerpoSQL.' from '.$tabla." ".$aliasTablaMadre." ".$inner.' order by 1"; <br>
 			$res = $this->query($sql,0); <br>
 			return $res; <br>	
 		} <br>
@@ -233,10 +273,14 @@ if ($res == false) {
 	
 
 	
-	echo "<br><br>/*   PARA ".$nombre." */<br><br>".$includes."<br>/* Fin */<br>/*   PARA ".$nombre." */<br>".$ajaxFunciones."<br>/* Fin */<br><br>/*   PARA ".$nombre." */<br>".$ajaxFuncionesController."<br>/* Fin */";
+//	echo "<br><br>/*   PARA ".$nombre." */<br><br>".$includes."<br>/* Fin */<br>/*   PARA ".$nombre." */<br>".$ajaxFunciones."<br>/* Fin */<br><br>/*   PARA ".$nombre." */<br>".$ajaxFuncionesController."<br>/* Fin */";
+	
+	echo "<br><br>/*   PARA ".$nombre." */<br><br>".$includes."<br>/* Fin */<br>/*";
 }
-
-
+	
+	//echo '<hr>';
+	echo ' /* Fin de la Tabla: '.$rowM[0]."*/<br>";
+}
 
 ?>
 </body>
