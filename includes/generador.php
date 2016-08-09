@@ -32,6 +32,9 @@ function query($sql,$accion) {
 	
 }
 
+
+
+
 $tablasAr	= array("clientes"        => "dbclientes",        
 "clientevehiculos"=> "dbclientevehiculos",
 "ordenes"         => "dbordenes",         
@@ -43,6 +46,41 @@ $tablasAr	= array("clientes"        => "dbclientes",
 "modelo"          => "tbmodelo",          
 "roles"           => "tbroles",          
 "tipovehiculo"    => "tbtipovehiculo");
+
+
+function recursiveTablas($ar, $tabla, $aliasTablaMadre) {
+	
+	$tablasArAux	= array("clientes"        => "dbclientes",        
+	"clientevehiculos"=> "dbclientevehiculos",
+	"ordenes"         => "dbordenes",         
+	"usuarios"        => "dbusuarios",        
+	"vehiculos"       => "dbvehiculos",       
+	"predio_menu"     => "predio_menu",       
+	"estados"         => "tbestados",         
+	"marca"           => "tbmarca",           
+	"modelo"          => "tbmodelo",          
+	"roles"           => "tbroles",          
+	"tipovehiculo"    => "tbtipovehiculo");
+	$inner= '';
+	$sql	=	"show columns from ".$tabla;
+	$res 	=	query($sql,0);
+	
+	while ($row = mysql_fetch_array($res)) {
+		if ($row[3] == 'MUL') {
+			$TableReferencia 	= str_replace('ref','',$row[0]);
+			
+			recursiveTablas($tablasArAux, $ar[$TableReferencia], $aliasTablaMadre);
+			
+			$sqlTR	=	"show columns from ".$ar[$TableReferencia];
+			//die(var_dump($tablasAr['clientes']));
+			$resTR 	=	query($sqlTR,0);
+			$inner .= " inner join ".$ar[$TableReferencia]." ".substr($TableReferencia,0,2)." ON ".substr($TableReferencia,0,2).".".mysql_result($resTR,0,0)." = ".$aliasTablaMadre.".".$row[0]." ";
+			
+		}
+	}
+	
+	return $inner;
+}
 
 
 $servicios	= "Referencias";
@@ -118,8 +156,11 @@ if ($res == false) {
 				$sqlTR	=	"show columns from ".$tablasAr[$TableReferencia];
 				//die(var_dump($tablasAr['clientes']));
 				$resTR 	=	query($sqlTR,0);
-				$inner .= " inner join ".$tablasAr[$TableReferencia]." ".substr($TableReferencia,0,2)." ON ".substr($TableReferencia,0,2).".".mysql_result($resTR,0,0)." = ".$aliasTablaMadre.".".$row[0]." ";
-				
+				$inner .= " inner join ".$tablasAr[$TableReferencia]." ".substr($TableReferencia,0,3)." ON ".substr($TableReferencia,0,3).".".mysql_result($resTR,0,0)." = ".$aliasTablaMadre.".".$row[0]." ";
+				/*if ($TableReferencia == 'clientevehiculos') {
+					die(var_dump('aca'));
+				}*/
+				$inner .= recursiveTablas($tablasAr, $tablasAr[$TableReferencia], substr($TableReferencia,0,3));
 			}
 			
 			
