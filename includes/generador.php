@@ -50,7 +50,7 @@ $tablasAr	= array("clientes"        => "dbclientes",
 
 function recursiveTablas($ar, $tabla, $aliasTablaMadre) {
 	
-	$tablasArAux	= array("clientes"        => "dbclientes",        
+	$tablasArAux2	= array("clientes"        => "dbclientes",        
 	"clientevehiculos"=> "dbclientevehiculos",
 	"ordenes"         => "dbordenes",         
 	"usuarios"        => "dbusuarios",        
@@ -61,6 +61,18 @@ function recursiveTablas($ar, $tabla, $aliasTablaMadre) {
 	"modelo"          => "tbmodelo",          
 	"roles"           => "tbroles",          
 	"tipovehiculo"    => "tbtipovehiculo");
+
+	$tablasArAux	= array("clientes"        => 1,        
+	"clientevehiculos"=> 1,
+	"ordenes"         => 4,         
+	"usuarios"        => 1,        
+	"vehiculos"       => 1,       
+	"predio_menu"     => 1,       
+	"estados"         => 1,         
+	"marca"           => 1,           
+	"modelo"          => 1,          
+	"roles"           => 1,          
+	"tipovehiculo"    => 1);
 	$inner= '';
 	$sql	=	"show columns from ".$tabla;
 	$res 	=	query($sql,0);
@@ -68,13 +80,15 @@ function recursiveTablas($ar, $tabla, $aliasTablaMadre) {
 	while ($row = mysql_fetch_array($res)) {
 		if ($row[3] == 'MUL') {
 			$TableReferencia 	= str_replace('ref','',$row[0]);
-			
-			recursiveTablas($tablasArAux, $ar[$TableReferencia], $aliasTablaMadre);
+			//if ($tablasArAux[$TableReferencia] == 1) {
+				recursiveTablas($tablasArAux2, $ar[$TableReferencia], $aliasTablaMadre);
+			//}
+			//recursiveTablas($ar, $ar[$TableReferencia], $aliasTablaMadre);
 			
 			$sqlTR	=	"show columns from ".$ar[$TableReferencia];
 			//die(var_dump($tablasAr['clientes']));
 			$resTR 	=	query($sqlTR,0);
-			$inner .= " inner join ".$ar[$TableReferencia]." ".substr($TableReferencia,0,2)." ON ".substr($TableReferencia,0,2).".".mysql_result($resTR,0,0)." = ".$aliasTablaMadre.".".$row[0]." ";
+			$inner .= " inner join ".$ar[$TableReferencia]." ".substr($TableReferencia,0,2)." ON ".substr($TableReferencia,0,2).".".mysql_result($resTR,0,0)." = ".$aliasTablaMadre.".".$row[0]." <br>";
 			
 		}
 	}
@@ -82,6 +96,8 @@ function recursiveTablas($ar, $tabla, $aliasTablaMadre) {
 	return $inner;
 }
 
+$ajaxFunciones = '';
+$ajaxFuncionesController = '';
 
 $servicios	= "Referencias";
 
@@ -115,7 +131,7 @@ if ($res == false) {
 	$cuerpoVariableUpdate = "";
 	$cuerpoVariablePOST = "";
 	
-	$ajaxFunciones = "
+	$ajaxFunciones .= "
 	
 		case 'insertar".$nombre."': <br>
 			insertar".$nombre."("."$"."servicios".$servicios."); <br>
@@ -156,7 +172,7 @@ if ($res == false) {
 				$sqlTR	=	"show columns from ".$tablasAr[$TableReferencia];
 				//die(var_dump($tablasAr['clientes']));
 				$resTR 	=	query($sqlTR,0);
-				$inner .= " inner join ".$tablasAr[$TableReferencia]." ".substr($TableReferencia,0,3)." ON ".substr($TableReferencia,0,3).".".mysql_result($resTR,0,0)." = ".$aliasTablaMadre.".".$row[0]." ";
+				$inner .= " inner join ".$tablasAr[$TableReferencia]." ".substr($TableReferencia,0,3)." ON ".substr($TableReferencia,0,3).".".mysql_result($resTR,0,0)." = ".$aliasTablaMadre.".".$row[0]." <br>";
 				/*if ($TableReferencia == 'clientevehiculos') {
 					die(var_dump('aca'));
 				}*/
@@ -225,7 +241,7 @@ if ($res == false) {
 	
 	//$ajaxFuncionesController = '';
 	
-	$ajaxFuncionesController = "
+	$ajaxFuncionesController .= "
 	
 		function insertar".$nombre."("."$"."servicios".$servicios.") { <br>
 			".$cuerpoVariablePOST."
@@ -299,7 +315,7 @@ if ($res == false) {
 		 <br>
 		  <br>
 		function traer'.$nombre.'() { <br>
-			$sql = "select '.$clave.','.$cuerpoSQL.' from '.$tabla." ".$aliasTablaMadre." ".$inner.' order by 1"; <br>
+			$sql = "select <br>'.$aliasTablaMadre.".".$clave.',<br>'.$aliasTablaMadre.".".str_replace(",",",<br>".$aliasTablaMadre.".",$cuerpoSQL).'<br> from '.$tabla." ".$aliasTablaMadre." <br>".$inner.' order by 1"; <br>
 			$res = $this->query($sql,0); <br>
 			return $res; <br>	
 		} <br>
@@ -317,11 +333,16 @@ if ($res == false) {
 //	echo "<br><br>/*   PARA ".$nombre." */<br><br>".$includes."<br>/* Fin */<br>/*   PARA ".$nombre." */<br>".$ajaxFunciones."<br>/* Fin */<br><br>/*   PARA ".$nombre." */<br>".$ajaxFuncionesController."<br>/* Fin */";
 	
 	echo "<br><br>/*   PARA ".$nombre." */<br><br>".$includes."<br>/* Fin */<br>/*";
+	
 }
 	
 	//echo '<hr>';
 	echo ' /* Fin de la Tabla: '.$rowM[0]."*/<br>";
+	
 }
+echo "********************************************************************************<br>";
+echo "<br><br>/*   PARA ".$nombre." */<br><br>".$ajaxFunciones."<br>/* Fin */<br>/*";
+echo "<br><br>/*   PARA ".$nombre." */<br><br>".$ajaxFuncionesController."<br>/* Fin */<br>/*";
 
 ?>
 </body>

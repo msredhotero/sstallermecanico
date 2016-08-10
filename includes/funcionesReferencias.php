@@ -20,6 +20,9 @@ function GUID()
 }
 
 
+
+
+
 /* PARA Clientes */
 
 function insertarClientes($apellido,$nombre,$nrodocumento,$fechanacimiento,$direccion,$telefono,$email) {
@@ -48,7 +51,17 @@ return $res;
 
 
 function traerClientes() {
-$sql = "select idcliente,apellido,nombre,nrodocumento,fechanacimiento,direccion,telefono,email from dbclientes order by 1";
+$sql = "select
+c.idcliente,
+c.apellido,
+c.nombre,
+c.nrodocumento,
+c.fechanacimiento,
+c.direccion,
+c.telefono,
+c.email
+from dbclientes c
+order by 1";
 $res = $this->query($sql,0);
 return $res;
 }
@@ -66,18 +79,18 @@ return $res;
 
 /* PARA Clientevehiculos */
 
-function insertarClientevehiculos($refcliente,$refvehiculo,$activo) {
-$sql = "insert into dbclientevehiculos(idclientevehiculo,refcliente,refvehiculo,activo)
-values ('',".$refcliente.",".$refvehiculo.",".$activo.")";
+function insertarClientevehiculos($refcliente,$refclientes,$refvehiculos,$activo) {
+$sql = "insert into dbclientevehiculos(idclientevehiculo,refcliente,refclientes,refvehiculos,activo)
+values ('',".$refcliente.",".$refclientes.",".$refvehiculos.",".$activo.")";
 $res = $this->query($sql,1);
 return $res;
 }
 
 
-function modificarClientevehiculos($id,$refcliente,$refvehiculo,$activo) {
+function modificarClientevehiculos($id,$refcliente,$refclientes,$refvehiculos,$activo) {
 $sql = "update dbclientevehiculos
 set
-refcliente = ".$refcliente.",refvehiculo = ".$refvehiculo.",activo = ".$activo."
+refcliente = ".$refcliente.",refclientes = ".$refclientes.",refvehiculos = ".$refvehiculos.",activo = ".$activo."
 where idclientevehiculo =".$id;
 $res = $this->query($sql,0);
 return $res;
@@ -92,14 +105,25 @@ return $res;
 
 
 function traerClientevehiculos() {
-$sql = "select idclientevehiculo,refcliente,refvehiculo,activo from dbclientevehiculos order by 1";
+$sql = "select
+c.idclientevehiculo,
+c.refcliente,
+c.refclientes,
+c.refvehiculos,
+c.activo
+from dbclientevehiculos c
+inner join dbclientes cli ON cli.idcliente = c.refclientes
+inner join dbvehiculos veh ON veh.idvehiculo = c.refvehiculos
+inner join tbmodelo mo ON mo.idmodelo = veh.refmodelo
+inner join tbtipovehiculo ti ON ti.idtipovehiculo = veh.reftipovehiculo
+order by 1";
 $res = $this->query($sql,0);
 return $res;
 }
 
 
 function traerClientevehiculosPorId($id) {
-$sql = "select idclientevehiculo,refcliente,refvehiculo,activo from dbclientevehiculos where idclientevehiculo =".$id;
+$sql = "select idclientevehiculo,refcliente,refclientes,refvehiculos,activo from dbclientevehiculos where idclientevehiculo =".$id;
 $res = $this->query($sql,0);
 return $res;
 }
@@ -110,18 +134,18 @@ return $res;
 
 /* PARA Ordenes */
 
-function insertarOrdenes($numero,$refclientevehiculo,$fechacrea,$fechamodi,$usuacrea,$usuamodi,$refestado,$detallereparacion) {
-$sql = "insert into dbordenes(idorden,numero,refclientevehiculo,fechacrea,fechamodi,usuacrea,usuamodi,refestado,detallereparacion)
-values ('','".utf8_decode($numero)."',".$refclientevehiculo.",'".utf8_decode($fechacrea)."','".utf8_decode($fechamodi)."','".utf8_decode($usuacrea)."','".utf8_decode($usuamodi)."',".$refestado.",'".utf8_decode($detallereparacion)."')";
+function insertarOrdenes($numero,$refclientevehiculos,$fechacrea,$fechamodi,$usuacrea,$usuamodi,$detallereparacion,$refestados) {
+$sql = "insert into dbordenes(idorden,numero,refclientevehiculos,fechacrea,fechamodi,usuacrea,usuamodi,detallereparacion,refestados)
+values ('','".utf8_decode($numero)."',".$refclientevehiculos.",'".utf8_decode($fechacrea)."','".utf8_decode($fechamodi)."','".utf8_decode($usuacrea)."','".utf8_decode($usuamodi)."','".utf8_decode($detallereparacion)."',".$refestados.")";
 $res = $this->query($sql,1);
 return $res;
 }
 
 
-function modificarOrdenes($id,$numero,$refclientevehiculo,$fechacrea,$fechamodi,$usuacrea,$usuamodi,$refestado,$detallereparacion) {
+function modificarOrdenes($id,$numero,$refclientevehiculos,$fechacrea,$fechamodi,$usuacrea,$usuamodi,$detallereparacion,$refestados) {
 $sql = "update dbordenes
 set
-numero = '".utf8_decode($numero)."',refclientevehiculo = ".$refclientevehiculo.",fechacrea = '".utf8_decode($fechacrea)."',fechamodi = '".utf8_decode($fechamodi)."',usuacrea = '".utf8_decode($usuacrea)."',usuamodi = '".utf8_decode($usuamodi)."',refestado = ".$refestado.",detallereparacion = '".utf8_decode($detallereparacion)."'
+numero = '".utf8_decode($numero)."',refclientevehiculos = ".$refclientevehiculos.",fechacrea = '".utf8_decode($fechacrea)."',fechamodi = '".utf8_decode($fechamodi)."',usuacrea = '".utf8_decode($usuacrea)."',usuamodi = '".utf8_decode($usuamodi)."',detallereparacion = '".utf8_decode($detallereparacion)."',refestados = ".$refestados."
 where idorden =".$id;
 $res = $this->query($sql,0);
 return $res;
@@ -135,46 +159,30 @@ return $res;
 }
 
 
-function traerOrdenes() { 
-$sql = "SELECT 
-			idorden,
-			numero,
-			c.apellido,
-			c.nombre,
-			v.patente,
-			m.marca,
-			mo.modelo,
-			fechacrea,
-			fechamodi,
-			usuacrea,
-			usuamodi,
-			e.estado,
-			detallereparacion,
-			o.refestado,
-			o.refclientevehiculo
-		FROM
-			dbordenes o
-				INNER JOIN
-			tbestados e ON e.idestado = o.refestado
-				INNER JOIN
-			dbclientevehiculos cv ON cv.idclientevehiculo = o.refclientevehiculo
-				INNER JOIN
-			dbclientes c ON c.idcliente = cv.refcliente
-				INNER JOIN
-			dbvehiculos v ON v.idvehiculo = cv.refvehiculo
-				INNER JOIN
-			tbmodelo mo ON mo.idmodelo = v.refmodelo
-				INNER JOIN
-			tbmarca m ON m.idmarca = mo.refmarca
-				
-		ORDER BY 1"; 
-$res = $this->query($sql,0); 
-return $res; 
-} 
+function traerOrdenes() {
+$sql = "select
+o.idorden,
+o.numero,
+o.refclientevehiculos,
+o.fechacrea,
+o.fechamodi,
+o.usuacrea,
+o.usuamodi,
+o.detallereparacion,
+o.refestados
+from dbordenes o
+inner join dbclientevehiculos cli ON cli.idclientevehiculo = o.refclientevehiculos
+inner join dbclientes cl ON cl.idcliente = cli.refclientes
+inner join dbvehiculos ve ON ve.idvehiculo = cli.refvehiculos
+inner join tbestados est ON est.idestado = o.refestados
+order by 1";
+$res = $this->query($sql,0);
+return $res;
+}
 
 
 function traerOrdenesPorId($id) {
-$sql = "select idorden,numero,refclientevehiculo,fechacrea,fechamodi,usuacrea,usuamodi,refestado,detallereparacion from dbordenes where idorden =".$id;
+$sql = "select idorden,numero,refclientevehiculos,fechacrea,fechamodi,usuacrea,usuamodi,detallereparacion,refestados from dbordenes where idorden =".$id;
 $res = $this->query($sql,0);
 return $res;
 }
@@ -185,18 +193,18 @@ return $res;
 
 /* PARA Usuarios */
 
-function insertarUsuarios($usuario,$password,$refroll,$email,$nombrecompleto) {
-$sql = "insert into dbusuarios(idusuario,usuario,password,refroll,email,nombrecompleto)
-values ('','".utf8_decode($usuario)."','".utf8_decode($password)."',".$refroll.",'".utf8_decode($email)."','".utf8_decode($nombrecompleto)."')";
+function insertarUsuarios($usuario,$password,$refroles,$email,$nombrecompleto) {
+$sql = "insert into dbusuarios(idusuario,usuario,password,refroles,email,nombrecompleto)
+values ('','".utf8_decode($usuario)."','".utf8_decode($password)."',".$refroles.",'".utf8_decode($email)."','".utf8_decode($nombrecompleto)."')";
 $res = $this->query($sql,1);
 return $res;
 }
 
 
-function modificarUsuarios($id,$usuario,$password,$refroll,$email,$nombrecompleto) {
+function modificarUsuarios($id,$usuario,$password,$refroles,$email,$nombrecompleto) {
 $sql = "update dbusuarios
 set
-usuario = '".utf8_decode($usuario)."',password = '".utf8_decode($password)."',refroll = ".$refroll.",email = '".utf8_decode($email)."',nombrecompleto = '".utf8_decode($nombrecompleto)."'
+usuario = '".utf8_decode($usuario)."',password = '".utf8_decode($password)."',refroles = ".$refroles.",email = '".utf8_decode($email)."',nombrecompleto = '".utf8_decode($nombrecompleto)."'
 where idusuario =".$id;
 $res = $this->query($sql,0);
 return $res;
@@ -211,14 +219,23 @@ return $res;
 
 
 function traerUsuarios() {
-$sql = "select idusuario,usuario,password,refroll,email,nombrecompleto from dbusuarios order by 1";
+$sql = "select
+u.idusuario,
+u.usuario,
+u.password,
+u.refroles,
+u.email,
+u.nombrecompleto
+from dbusuarios u
+inner join tbroles rol ON rol.idrol = u.refroles
+order by 1";
 $res = $this->query($sql,0);
 return $res;
 }
 
 
 function traerUsuariosPorId($id) {
-$sql = "select idusuario,usuario,password,refroll,email,nombrecompleto from dbusuarios where idusuario =".$id;
+$sql = "select idusuario,usuario,password,refroles,email,nombrecompleto from dbusuarios where idusuario =".$id;
 $res = $this->query($sql,0);
 return $res;
 }
@@ -229,18 +246,18 @@ return $res;
 
 /* PARA Vehiculos */
 
-function insertarVehiculos($patente,$refmodelo,$anio) {
-$sql = "insert into dbvehiculos(idvehiculo,patente,refmodelo,anio)
-values ('','".utf8_decode($patente)."',".$refmodelo.",".$anio.")";
+function insertarVehiculos($patente,$refmodelo,$reftipovehiculo,$anio) {
+$sql = "insert into dbvehiculos(idvehiculo,patente,refmodelo,reftipovehiculo,anio)
+values ('','".utf8_decode($patente)."',".$refmodelo.",".$reftipovehiculo.",".$anio.")";
 $res = $this->query($sql,1);
 return $res;
 }
 
 
-function modificarVehiculos($id,$patente,$refmodelo,$anio) {
+function modificarVehiculos($id,$patente,$refmodelo,$reftipovehiculo,$anio) {
 $sql = "update dbvehiculos
 set
-patente = '".utf8_decode($patente)."',refmodelo = ".$refmodelo.",anio = ".$anio."
+patente = '".utf8_decode($patente)."',refmodelo = ".$refmodelo.",reftipovehiculo = ".$reftipovehiculo.",anio = ".$anio."
 where idvehiculo =".$id;
 $res = $this->query($sql,0);
 return $res;
@@ -255,14 +272,24 @@ return $res;
 
 
 function traerVehiculos() {
-$sql = "select idvehiculo,patente,refmodelo,anio from dbvehiculos order by 1";
+$sql = "select
+v.idvehiculo,
+v.patente,
+v.refmodelo,
+v.reftipovehiculo,
+v.anio
+from dbvehiculos v
+inner join tbmodelo mod ON mod.idmodelo = v.refmodelo
+inner join tbmarca ma ON ma.idmarca = mod.refmarca
+inner join tbtipovehiculo tip ON tip.idtipovehiculo = v.reftipovehiculo
+order by 1";
 $res = $this->query($sql,0);
 return $res;
 }
 
 
 function traerVehiculosPorId($id) {
-$sql = "select idvehiculo,patente,refmodelo,anio from dbvehiculos where idvehiculo =".$id;
+$sql = "select idvehiculo,patente,refmodelo,reftipovehiculo,anio from dbvehiculos where idvehiculo =".$id;
 $res = $this->query($sql,0);
 return $res;
 }
@@ -299,7 +326,16 @@ return $res;
 
 
 function traerPredio_menu() {
-$sql = "select idmenu,url,icono,nombre,Orden,hover,permiso from predio_menu order by 1";
+$sql = "select
+p.idmenu,
+p.url,
+p.icono,
+p.nombre,
+p.Orden,
+p.hover,
+p.permiso
+from predio_menu p
+order by 1";
 $res = $this->query($sql,0);
 return $res;
 }
@@ -343,7 +379,11 @@ return $res;
 
 
 function traerEstados() {
-$sql = "select idestado,estado from tbestados order by 1";
+$sql = "select
+e.idestado,
+e.estado
+from tbestados e
+order by 1";
 $res = $this->query($sql,0);
 return $res;
 }
@@ -387,7 +427,12 @@ return $res;
 
 
 function traerMarca() {
-$sql = "select idmarca,marca,(case when activo = 1 then 'Si' else 'No' end) as activo from tbmarca order by 1";
+$sql = "select
+m.idmarca,
+m.marca,
+m.activo
+from tbmarca m
+order by 1";
 $res = $this->query($sql,0);
 return $res;
 }
@@ -431,10 +476,18 @@ return $res;
 
 
 function traerModelo() {
-$sql = "select idmodelo,modelo,m.marca,(case when o.activo =1 then 'Si' else 'No' end) as activo ,m.idmarca from tbmodelo o inner join tbmarca m on m.idmarca = o.refmarca order by 1";
+$sql = "select
+m.idmodelo,
+m.modelo,
+m.refmarca,
+m.activo
+from tbmodelo m
+inner join tbmarca mar ON mar.idmarca = m.refmarca
+order by 1";
 $res = $this->query($sql,0);
 return $res;
 }
+
 
 function traerModeloPorId($id) {
 $sql = "select idmodelo,modelo,refmarca,activo from tbmodelo where idmodelo =".$id;
@@ -474,7 +527,12 @@ return $res;
 
 
 function traerRoles() {
-$sql = "select idrol,descripcion,activo from tbroles order by 1";
+$sql = "select
+r.idrol,
+r.descripcion,
+r.activo
+from tbroles r
+order by 1";
 $res = $this->query($sql,0);
 return $res;
 }
@@ -490,10 +548,54 @@ return $res;
 /* /* Fin de la Tabla: tbroles*/
 
 
+/* PARA Tipovehiculo */
+
+function insertarTipovehiculo($tipovehiculo,$activo) {
+$sql = "insert into tbtipovehiculo(idtipovehiculo,tipovehiculo,activo)
+values ('','".utf8_decode($tipovehiculo)."',".$activo.")";
+$res = $this->query($sql,1);
+return $res;
+}
 
 
+function modificarTipovehiculo($id,$tipovehiculo,$activo) {
+$sql = "update tbtipovehiculo
+set
+tipovehiculo = '".utf8_decode($tipovehiculo)."',activo = ".$activo."
+where idtipovehiculo =".$id;
+$res = $this->query($sql,0);
+return $res;
+}
+
+
+function eliminarTipovehiculo($id) {
+$sql = "delete from tbtipovehiculo where idtipovehiculo =".$id;
+$res = $this->query($sql,0);
+return $res;
+}
+
+
+function traerTipovehiculo() {
+$sql = "select
+t.idtipovehiculo,
+t.tipovehiculo,
+t.activo
+from tbtipovehiculo t
+order by 1";
+$res = $this->query($sql,0);
+return $res;
+}
+
+
+function traerTipovehiculoPorId($id) {
+$sql = "select idtipovehiculo,tipovehiculo,activo from tbtipovehiculo where idtipovehiculo =".$id;
+$res = $this->query($sql,0);
+return $res;
+}
 
 /* Fin */
+/* /* Fin de la Tabla: tbtipovehiculo*/
+
 
 function query($sql,$accion) {
 		
