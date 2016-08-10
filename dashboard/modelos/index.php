@@ -22,43 +22,52 @@ $serviciosReferencias 	= new ServiciosReferencias();
 $fecha = date('Y-m-d');
 
 //$resProductos = $serviciosProductos->traerProductosLimite(6);
-$resMenu = $serviciosHTML->menu(utf8_encode($_SESSION['nombre_predio']),"Modelos",$_SESSION['refroll_predio'],'');
+$resMenu = $serviciosHTML->menu(utf8_encode($_SESSION['nombre_predio']),"Vehiculos",$_SESSION['refroll_predio'],'');
 
 
 /////////////////////// Opciones pagina ///////////////////////////////////////////////
-$singular = "Modelo";
+$singular = "Vehiculo";
 
-$plural = "Modelos";
+$plural = "Vehiculos";
 
-$eliminar = "eliminarModelo";
+$eliminar = "eliminarVehiculos";
 
-$insertar = "insertarModelo";
+$insertar = "insertarVehiculos";
 
 $tituloWeb = "Gestión: Talleres";
 //////////////////////// Fin opciones ////////////////////////////////////////////////
 
 
 /////////////////////// Opciones para la creacion del formulario  /////////////////////
-$tabla 			= "tbmodelo";
+$tabla 			= "dbvehiculos";
 
-$lblCambio	 	= array("refmarca");
-$lblreemplazo	= array("Marca");
+$lblCambio	 	= array("refmodelo","reftipovehiculo", "anio");
+$lblreemplazo	= array("Marca/Modelo", "Tipo", "Año");
 
 
-$resMarca 	= $serviciosReferencias->traerMarca();
-$cadRef 	= $serviciosFunciones->devolverSelectBox($resMarca,array(1),'');
+$resModelo 	= $serviciosReferencias->traerModelo();
+$cadRef 	= $serviciosFunciones->devolverSelectBox($resModelo,array(2,1),' - ');
 
-$refdescripcion = array(0 => $cadRef);
-$refCampo 	=  array("refmarca");
+$resTipo 	= $serviciosReferencias->traerTipovehiculo();
+$cadRef2 	= $serviciosFunciones->devolverSelectBox($resTipo,array(1),'');
+
+$resClientes= $serviciosReferencias->traerClientes();
+$cadClientes= $serviciosFunciones->devolverSelectBox($resClientes,array(1,2),' ');
+
+$refdescripcion = array(0 => $cadRef,1 => $cadRef2);
+$refCampo 	=  array("refmodelo","reftipovehiculo");
 //////////////////////////////////////////////  FIN de los opciones //////////////////////////
 
 
 
 
-/////////////////////// Opciones para la creacion del view  /////////////////////
-$cabeceras 		= "	<th>Modelo</th>
+/////////////////////// Opciones para la creacion del view  patente,refmodelo,reftipovehiculo,anio/////////////////////
+$cabeceras 		= "	<th>Patente</th>
+					<th>Dueño</th>
 					<th>Marca</th>
-					<th>Activo</th>";
+					<th>Modelo</th>
+					<th>Tipo</th>
+					<th>Año</th>";
 
 //////////////////////////////////////////////  FIN de los opciones //////////////////////////
 
@@ -67,7 +76,7 @@ $cabeceras 		= "	<th>Modelo</th>
 
 $formulario 	= $serviciosFunciones->camposTabla($insertar ,$tabla,$lblCambio,$lblreemplazo,$refdescripcion,$refCampo);
 
-$lstCargados 	= $serviciosFunciones->camposTablaView($cabeceras,$serviciosReferencias->traerModelo(),3);
+$lstCargados 	= $serviciosFunciones->camposTablaView($cabeceras,$serviciosReferencias->traerVehiculosClientes(),6);
 
 
 
@@ -147,6 +156,18 @@ if ($_SESSION['refroll_predio'] != 1) {
         	<form class="form-inline formulario" role="form">
         	<div class="row">
 			<?php echo $formulario; ?>
+            </div>
+            <hr>
+            <h4><span class="glyphicon glyphicon-link"></span> Asignar el vehiculo a un Dueño o Responsable</h4>
+            <div class="row">
+            	<div class="form-group col-md-6">
+                    <label for="refclientes" class="control-label" style="text-align:left">Clientes</label>
+                    <div class="input-group col-md-12">
+                        <select class="form-control" id="refclientes" name="refclientes">
+							<?php echo $cadClientes; ?>
+                		</select>
+                    </div>
+                </div>
             </div>
             
             <div class='row' style="margin-left:25px; margin-right:25px;">
