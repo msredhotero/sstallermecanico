@@ -430,7 +430,7 @@ function traerMarca() {
 $sql = "select
 m.idmarca,
 m.marca,
-m.activo
+(case when m.activo = 1 then 'Si' else 'No' end) as activo
 from tbmarca m
 order by 1";
 $res = $this->query($sql,0);
@@ -479,8 +479,8 @@ function traerModelo() {
 $sql = "select
 m.idmodelo,
 m.modelo,
-m.refmarca,
-m.activo
+mar.marca,
+(case when m.activo = 1 then 'Si' else 'No' end) as activo
 from tbmodelo m
 inner join tbmarca mar ON mar.idmarca = m.refmarca
 order by 1";

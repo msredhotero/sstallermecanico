@@ -8,7 +8,17 @@ date_default_timezone_set('America/Buenos_Aires');
 
 class Servicios {
 	
-
+	function devolverSelectBox($datos, $ar, $delimitador) {
+		$contenido	= '';
+		$cad		= ''; 
+		while ($rowTT = mysql_fetch_array($datos)) {
+			foreach ($ar as $i) {
+				$contenido .= $rowTT[$i].$delimitador;
+			}
+			$cad = $cad.'<option value="'.$rowTT[0].'">'.utf8_encode(substr($contenido,0,strlen($contenido)-strlen($delimitador))).'</option>';
+		}
+		return $cad;
+	}
 
 	function camposTablaView($cabeceras,$datos,$cantidad) {
 		$cadView = '';
