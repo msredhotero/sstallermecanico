@@ -9,13 +9,31 @@ date_default_timezone_set('America/Buenos_Aires');
 class Servicios {
 	
 	function devolverSelectBox($datos, $ar, $delimitador) {
-		$contenido	= '';
+		
 		$cad		= ''; 
 		while ($rowTT = mysql_fetch_array($datos)) {
+			$contenido	= '';
 			foreach ($ar as $i) {
 				$contenido .= $rowTT[$i].$delimitador;
 			}
-			$cad = $cad.'<option value="'.$rowTT[0].'">'.utf8_encode(substr($contenido,0,strlen($contenido)-strlen($delimitador))).'</option>';
+			$cad .= '<option value="'.$rowTT[0].'">'.utf8_encode(substr($contenido,0,strlen($contenido)-strlen($delimitador))).'</option>';
+		}
+		return $cad;
+	}
+	
+	function devolverSelectBoxActivo($datos, $ar, $delimitador, $idSelect) {
+		
+		$cad		= ''; 
+		while ($rowTT = mysql_fetch_array($datos)) {
+			$contenido	= '';
+			foreach ($ar as $i) {
+				$contenido .= $rowTT[$i].$delimitador;
+			}
+			if ($rowTT[0] == $idSelect) {
+				$cad .= '<option value="'.$rowTT[0].'" selected="selected">'.utf8_encode(substr($contenido,0,strlen($contenido)-strlen($delimitador))).'</option>';
+			} else {
+				$cad .= '<option value="'.$rowTT[0].'">'.utf8_encode(substr($contenido,0,strlen($contenido)-strlen($delimitador))).'</option>';
+			}
 		}
 		return $cad;
 	}
@@ -126,6 +144,8 @@ class Servicios {
 			}
 		}
 		
+		//'.utf8_encode($cadRows).' verificar al subir al servidor
+		
 		$cadView = $cadView.'
 			<table class="table table-striped table-responsive" id="example">
             	<thead>
@@ -136,7 +156,7 @@ class Servicios {
                 </thead>
                 <tbody id="'.$idresultados.'">
 
-                	'.utf8_encode($cadRows).'
+                	'.($cadRows).'
                 </tbody>
             </table>
 			<div style="margin-bottom:85px; margin-right:60px;"></div>
@@ -258,7 +278,7 @@ class Servicios {
 								if (strpos($row[1],"date") !== false) {
 									$label = ucwords($label);
 									$campo = strtolower($row[0]);
-									/*
+									
 									$form	=	$form.'
 									
 									<div class="form-group col-md-6">
@@ -271,8 +291,8 @@ class Servicios {
 									</div>
 									
 									';
-									*/
 									
+									/*
 									$form	=	$form.'
 									
 									<div class="form-group col-md-6">
@@ -284,7 +304,7 @@ class Servicios {
 									</div>
 									
 									';
-									
+									*/
 								} else {
 									
 									if (strpos($row[1],"time") !== false) {
@@ -517,7 +537,7 @@ class Servicios {
 								if (strpos($row[1],"date") !== false) {
 									$label = ucwords($label);
 									$campo = strtolower($row[0]);
-									/*
+									
 									$form	=	$form.'
 									
 									<div class="form-group col-md-6">
@@ -530,8 +550,8 @@ class Servicios {
 									</div>
 									
 									';
-									*/
 									
+									/*
 									$form	=	$form.'
 									
 									<div class="form-group col-md-6">
@@ -543,7 +563,7 @@ class Servicios {
 									</div>
 									
 									';
-									
+									*/
 								} else {
 									
 									if (strpos($row[1],"time") !== false) {
@@ -613,7 +633,7 @@ class Servicios {
 												<div class="form-group col-md-6">
 													<label for="'.$campo.'" class="control-label" style="text-align:left">'.$label.'</label>
 													<div class="input-group col-md-12">
-														<input type="text" value="'.utf8_encode(mysql_result($resMod,0,$row[0])).'" class="form-control" id="'.$campo.'" name="'.$campo.'" placeholder="Ingrese el '.$label.'..." required>
+														<input type="text" value="'.(mysql_result($resMod,0,$row[0])).'" class="form-control" id="'.$campo.'" name="'.$campo.'" placeholder="Ingrese el '.$label.'..." required>
 													</div>
 												</div>
 												
@@ -632,7 +652,7 @@ class Servicios {
 					$camposEscondido = $camposEscondido.'<input type="hidden" id="accion" name="accion" value="'.$accion.'"/>'.'<input type="hidden" id="id" name="id" value="'.$id.'"/>';	
 				}
 			}
-			
+			/* <input type="text" value="'.utf8_encode(mysql_result($resMod,0,$row[0])).'" class="form-control" id="'.$campo.'" name="'.$campo.'" placeholder="Ingrese el '.$label.'..." required>  ///////////////////////////////  verificar al subir al servidor   /////////////////////////////////*/
 			$formulario = $form."<br><br>".$camposEscondido;
 			
 			return $formulario;

@@ -61,7 +61,7 @@ c.direccion,
 c.telefono,
 c.email
 from dbclientes c
-order by 1";
+order by concat(c.apellido,' ',c.nombre)";
 $res = $this->query($sql,0);
 return $res;
 }
@@ -79,18 +79,19 @@ return $res;
 
 /* PARA Clientevehiculos */
 
-function insertarClientevehiculos($refcliente,$refclientes,$refvehiculos,$activo) {
-$sql = "insert into dbclientevehiculos(idclientevehiculo,refcliente,refclientes,refvehiculos,activo)
-values ('',".$refcliente.",".$refclientes.",".$refvehiculos.",".$activo.")";
+function insertarClientevehiculos($refclientes,$refvehiculos,$activo) {
+$sql = "insert into dbclientevehiculos(idclientevehiculo,refclientes,refvehiculos,activo)
+values ('',".$refclientes.",".$refvehiculos.",".$activo.")";
 $res = $this->query($sql,1);
 return $res;
+
 }
 
 
-function modificarClientevehiculos($id,$refcliente,$refclientes,$refvehiculos,$activo) {
+function modificarClientevehiculos($id,$refclientes,$refvehiculos,$activo) {
 $sql = "update dbclientevehiculos
 set
-refcliente = ".$refcliente.",refclientes = ".$refclientes.",refvehiculos = ".$refvehiculos.",activo = ".$activo."
+refclientes = ".$refclientes.",refvehiculos = ".$refvehiculos.",activo = ".$activo."
 where idclientevehiculo =".$id;
 $res = $this->query($sql,0);
 return $res;
@@ -107,7 +108,6 @@ return $res;
 function traerClientevehiculos() {
 $sql = "select
 c.idclientevehiculo,
-c.refcliente,
 c.refclientes,
 c.refvehiculos,
 c.activo
@@ -123,7 +123,20 @@ return $res;
 
 
 function traerClientevehiculosPorId($id) {
-$sql = "select idclientevehiculo,refcliente,refclientes,refvehiculos,activo from dbclientevehiculos where idclientevehiculo =".$id;
+$sql = "select idclientevehiculo,refclientes,refvehiculos,activo from dbclientevehiculos where idclientevehiculo =".$id;
+$res = $this->query($sql,0);
+return $res;
+}
+
+function traerClientevehiculosPorClienteVehiculo($idCliente,$idVehiculo) {
+$sql = "select idclientevehiculo,refclientes,refvehiculos,activo from dbclientevehiculos where refclientes =".$idCliente." and refvehiculos =".$idVehiculo;
+$res = $this->query($sql,0);
+return $res;
+}
+
+
+function traerClientevehiculosPorVehiculo($idVehiculo) {
+$sql = "select idclientevehiculo,refclientes,refvehiculos,activo from dbclientevehiculos where refvehiculos =".$idVehiculo;
 $res = $this->query($sql,0);
 return $res;
 }
@@ -282,6 +295,27 @@ from dbvehiculos v
 inner join tbmodelo mod ON mod.idmodelo = v.refmodelo
 inner join tbmarca ma ON ma.idmarca = mod.refmarca
 inner join tbtipovehiculo tip ON tip.idtipovehiculo = v.reftipovehiculo
+order by 1";
+$res = $this->query($sql,0);
+return $res;
+}
+
+
+function traerVehiculosClientes() {
+$sql = "select
+v.idvehiculo,
+v.patente,
+concat(cc.apellido,' ',cc.nombre) as titular,
+ma.marca,
+mo.modelo,
+tip.tipovehiculo,
+v.anio
+from dbvehiculos v
+inner join tbmodelo mo ON mo.idmodelo = v.refmodelo
+inner join tbmarca ma ON ma.idmarca = mo.refmarca
+inner join tbtipovehiculo tip ON tip.idtipovehiculo = v.reftipovehiculo
+inner join dbclientevehiculos cv on cv.refvehiculos = v.idvehiculo
+inner join dbclientes cc on cv.refclientes = cc.idcliente
 order by 1";
 $res = $this->query($sql,0);
 return $res;

@@ -34,7 +34,7 @@ if (mysql_num_rows($respusu) > 0) {
 	
 	
 	$idUsua = mysql_result($respusu,0,0);
-	$sqlpass = "select nombrecompleto,email,usuario,r.descripcion from dbusuarios u inner join tbroles r on r.idrol = u.refroles where password = '".$pass."' and idusuario = ".$idUsua;
+	$sqlpass = "select nombrecompleto,email,usuario,r.descripcion, r.idrol from dbusuarios u inner join tbroles r on r.idrol = u.refroles where password = '".$pass."' and idusuario = ".$idUsua;
 
 
 	$resppass = $this->query($sqlpass,0);
@@ -58,6 +58,7 @@ if (mysql_num_rows($respusu) > 0) {
 		$_SESSION['usua_predio'] = $usuario;
 		$_SESSION['nombre_predio'] = mysql_result($resppass,0,0);
 		$_SESSION['email_predio'] = mysql_result($resppass,0,1);
+		$_SESSION['idroll_predio'] = mysql_result($resppass,0,4);
 		$_SESSION['refroll_predio'] = mysql_result($resppass,0,3);
 		
 		return '';
@@ -109,7 +110,7 @@ $respusu = $this->query($sqlusu,0);
 
 function loginUsuario($usuario,$pass) {
 	
-	$sqlusu = "select * from se_usuarios where email = '".$usuario."'";
+	$sqlusu = "select * from dbusuarios where email = '".$usuario."'";
 
 
 
@@ -121,7 +122,7 @@ if (trim($usuario) != '' and trim($pass) != '') {
 		$error = '';
 		
 		$idUsua = mysql_result($respusu,0,0);
-		$sqlpass = "select concat(apellido,' ',nombre),email,refroll from se_usuarios where password = '".$pass."' and IdUsuario = ".$idUsua;
+		$sqlpass = "select concat(apellido,' ',nombre),email,refroles from dbusuarios where password = '".$pass."' and IdUsuario = ".$idUsua;
 	
 		$resppass = $this->query($sqlpass,0);
 		
@@ -149,7 +150,7 @@ if (trim($usuario) != '' and trim($pass) != '') {
 			$_SESSION['usua_predio'] = $usuario;
 			$_SESSION['nombre_predio'] = mysql_result($resppass,0,0);
 			$_SESSION['email_predio'] = mysql_result($resppass,0,1);
-			$_SESSION['refroll_predio'] = mysql_result($resppass,0,3);
+			$_SESSION['refroll_predio'] = mysql_result($resppass,0,2);
 		}
 	
 	
@@ -195,9 +196,9 @@ function traerUsuario($email) {
 }
 
 function traerUsuarios() {
-	$sql = "select u.idusuario,u.usuario, u.password, r.descripcion, u.email , u.nombrecompleto, u.refroll
+	$sql = "select u.idusuario,u.usuario, u.password, r.descripcion, u.email , u.nombrecompleto, u.refroles
 			from dbusuarios u
-			inner join tbroles r on u.refroll = r.idrol 
+			inner join tbroles r on u.refroles = r.idrol 
 			order by nombrecompleto";
 	$res = $this->query($sql,0);
 	if ($res == false) {
@@ -209,9 +210,9 @@ function traerUsuarios() {
 
 
 function traerUsuariosSimple() {
-	$sql = "select u.idusuario,u.usuario, u.password, r.descripcion, u.email , u.nombrecompleto, u.refroll
+	$sql = "select u.idusuario,u.usuario, u.password, r.descripcion, u.email , u.nombrecompleto, u.refroles
 			from dbusuarios u
-			inner join tbroles r on u.refroll = r.idrol 
+			inner join tbroles r on u.refroles = r.idrol 
 			where r.idrol <> 1
 			order by nombrecompleto";
 	$res = $this->query($sql,0);
@@ -315,7 +316,7 @@ function modificarUsuario($id,$usuario,$password,$refroll,$email,$nombrecompleto
 				usuario = '".utf8_decode($usuario)."',
 				password = '".utf8_decode($password)."',
 				email = '".utf8_decode($email)."',
-				refroll = ".$refroll.",
+				refroles = ".$refroll.",
 				nombrecompleto = '".utf8_decode($nombrecompleto)."'
 			WHERE idusuario = ".$id;
 	$res = $this->query($sql,0);

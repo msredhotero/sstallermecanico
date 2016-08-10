@@ -286,16 +286,27 @@ $res = $serviciosReferencias->eliminarUsuarios($id);
 echo $res;
 }
 function insertarVehiculos($serviciosReferencias) {
-$patente = $_POST['patente'];
-$refmodelo = $_POST['refmodelo'];
-$reftipovehiculo = $_POST['reftipovehiculo'];
-$anio = $_POST['anio'];
-$res = $serviciosReferencias->insertarVehiculos($patente,$refmodelo,$reftipovehiculo,$anio);
-if ((integer)$res > 0) {
-echo '';
-} else {
-echo 'Huvo un error al insertar datos';
-}
+	$patente 			= str_replace(' ','',ltrim(rtrim($_POST['patente'])));
+	$refmodelo 			= $_POST['refmodelo'];
+	$reftipovehiculo 	= $_POST['reftipovehiculo'];
+	$anio 				= $_POST['anio'];
+	$refclientes		= $_POST['refclientes'];
+	
+	$res = $serviciosReferencias->insertarVehiculos($patente,$refmodelo,$reftipovehiculo,$anio);
+	
+	if ((integer)$res > 0) {
+		
+		$res2 = $serviciosReferencias->insertarClientevehiculos($refclientes,$res,'1');
+		if ((integer)$res2 > 0) {
+			echo '';	
+		} else {
+			$serviciosReferencias->eliminarVehiculos($res);
+			echo 'Huvo un error al insertar datos del dueño';	
+		}
+		
+	} else {
+		echo 'Huvo un error al insertar datos';
+	}
 }
 function modificarVehiculos($serviciosReferencias) {
 $id = $_POST['id'];
@@ -553,7 +564,7 @@ function registrar($serviciosUsuarios) {
 function insertarUsuario($serviciosUsuarios) {
 	$usuario			=	$_POST['usuario'];
 	$password			=	$_POST['password'];
-	$refroll			=	$_POST['refroll'];
+	$refroll			=	$_POST['refroles'];
 	$email				=	$_POST['email'];
 	$nombre				=	$_POST['nombrecompleto'];
 	
@@ -570,11 +581,11 @@ function modificarUsuario($serviciosUsuarios) {
 	$id					=	$_POST['id'];
 	$usuario			=	$_POST['usuario'];
 	$password			=	$_POST['password'];
-	$refroll			=	$_POST['refroll'];
+	$refroll			=	$_POST['refroles'];
 	$email				=	$_POST['email'];
 	$nombre				=	$_POST['nombrecompleto'];
 	
-	echo $serviciosUsuarios->modificarUsuario($id,$apellido,$password,$refroll,$email,$nombre);
+	echo $serviciosUsuarios->modificarUsuario($id,$usuario,$password,$refroll,$email,$nombre);
 }
 
 
