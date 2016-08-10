@@ -22,49 +22,41 @@ $serviciosReferencias 	= new ServiciosReferencias();
 $fecha = date('Y-m-d');
 
 //$resProductos = $serviciosProductos->traerProductosLimite(6);
-$resMenu = $serviciosHTML->menu(utf8_encode($_SESSION['nombre_predio']),"Ciudades",$_SESSION['refroll_predio'],'');
+$resMenu = $serviciosHTML->menu(utf8_encode($_SESSION['nombre_predio']),"Modelos",$_SESSION['refroll_predio'],'');
 
 
 $id = $_GET['id'];
 
-$resResultado = $serviciosReferencias->traerCiudadesPorId($id);
+$resResultado = $serviciosReferencias->traerModeloPorId($id);
 
 
 /////////////////////// Opciones pagina ///////////////////////////////////////////////
-$singular = "Ciudad";
+$singular = "Modelo";
 
-$plural = "Ciudades";
+$plural = "Modelos";
 
-$eliminar = "eliminarCiudades";
+$eliminar = "eliminarModelo";
 
-$modificar = "modificarCiudades";
+$modificar = "modificarModelo";
 
-$idTabla = "idciudad";
+$idTabla = "idmodelo";
 
-$tituloWeb = "Gestión: Caracol Bienes Raíces";
+$tituloWeb = "Gestión: Talleres";
 //////////////////////// Fin opciones ////////////////////////////////////////////////
 
 
 /////////////////////// Opciones para la creacion del formulario  /////////////////////
-$tabla 			= "ciudades";
+$tabla 			= "tbmodelo";
 
-$lblCambio	 	= array("refprovincia");
-$lblreemplazo	= array("Provincia");
+$lblCambio	 	= array("refmarca");
+$lblreemplazo	= array("Marca");
 
 
-$resProvincia 	= $serviciosReferencias->traerProvincias();
-$cadRef = '';
-while ($rowTT = mysql_fetch_array($resProvincia)) {
-	if ($rowTT[0] == mysql_result($resResultado,0,0)) {
-		$cadRef = $cadRef.'<option value="'.$rowTT[0].'" selected>'.utf8_encode($rowTT[1]).'</option>';
-	} else {
-		$cadRef = $cadRef.'<option value="'.$rowTT[0].'">'.utf8_encode($rowTT[1]).'</option>';
-	}
-	
-}
+$resMarca 	= $serviciosReferencias->traerMarca();
+$cadRef 	= $serviciosFunciones->devolverSelectBoxActivo($resMarca,array(1),'',mysql_result($resResultado,0,'refmarca'));
 
 $refdescripcion = array(0 => $cadRef);
-$refCampo 	=  array("refprovincia");
+$refCampo 	=  array("refmarca");
 //////////////////////////////////////////////  FIN de los opciones //////////////////////////
 
 
@@ -75,7 +67,7 @@ $refCampo 	=  array("refprovincia");
 $formulario 	= $serviciosFunciones->camposTablaModificar($id, $idTabla, $modificar,$tabla,$lblCambio,$lblreemplazo,$refdescripcion,$refCampo);
 
 
-if ($_SESSION['refroll_predio'] != 1) {
+if ($_SESSION['idroll_predio'] != 1) {
 
 } else {
 

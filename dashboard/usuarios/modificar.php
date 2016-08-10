@@ -12,34 +12,30 @@ if (!isset($_SESSION['usua_predio']))
 include ('../../includes/funciones.php');
 include ('../../includes/funcionesUsuarios.php');
 include ('../../includes/funcionesHTML.php');
-include ('../../includes/funcionesFacturas.php');
-include ('../../includes/funcionesClientes.php');
-include ('../../includes/funcionesEmpresas.php');
+include ('../../includes/funcionesReferencias.php');
 
 $serviciosFunciones = new Servicios();
 $serviciosUsuario 	= new ServiciosUsuarios();
 $serviciosHTML 		= new ServiciosHTML();
-$serviciosFactuas 	= new ServiciosFacturas();
-$serviciosClientes	= new ServiciosClientes();
-$serviciosEmpresas	= new ServiciosEmpresas();
+$serviciosReferencias = new ServiciosReferencias();
 
 $fecha = date('Y-m-d');
 
 //$resProductos = $serviciosProductos->traerProductosLimite(6);
-$resMenu = $serviciosHTML->menu(utf8_encode($_SESSION['nombre_predio']),"Usuarios",$_SESSION['refroll_predio'],utf8_encode($_SESSION['usua_empresa']));
+$resMenu = $serviciosHTML->menu(utf8_encode($_SESSION['nombre_predio']),"Usuarios",$_SESSION['refroll_predio'],'');
 
 
 $id = $_GET['id'];
 
-$resResultado = $serviciosFactuas->traerFacturasPorId($id);
+$resResultado = $serviciosReferencias->traerUsuariosPorId($id);
 
 /////////////////////// Opciones para la creacion del formulario  /////////////////////
 $tabla 			= "dbusuarios";
 
-$lblCambio	 	= array("refroll","nombrecompleto");
+$lblCambio	 	= array("refroles","nombrecompleto");
 $lblreemplazo	= array("Perfil","Nombre Completo");
 
-if ($_SESSION['refroll_predio'] != 1) {
+if ($_SESSION['idroll_predio'] != 1) {
 	$resRoles 	= $serviciosUsuario->traerRolesSimple();
 } else {
 	$resRoles 	= $serviciosUsuario->traerRoles();
@@ -49,7 +45,7 @@ if ($_SESSION['refroll_predio'] != 1) {
 
 $cadRef = '';
 while ($rowTT = mysql_fetch_array($resRoles)) {
-	if (mysql_result($resResultado,0,'refroll') == $rowTT[0]) {
+	if (mysql_result($resResultado,0,'refroles') == $rowTT[0]) {
 		$cadRef = $cadRef.'<option value="'.$rowTT[0].'" selected>'.utf8_encode($rowTT[1]).'</option>';
 	} else {
 		$cadRef = $cadRef.'<option value="'.$rowTT[0].'">'.utf8_encode($rowTT[1]).'</option>';
@@ -59,15 +55,15 @@ while ($rowTT = mysql_fetch_array($resRoles)) {
 
 
 $refdescripcion = array(0 => $cadRef);
-$refCampo 	=  array("refroll"); 
+$refCampo 	=  array("refroles"); 
 //////////////////////////////////////////////  FIN de los opciones //////////////////////////
 
 
 
-$formulario 	= $serviciosFunciones->camposTablaModificar($id, "idfactura", "modificarFacturas",$tabla,$lblCambio,$lblreemplazo,$refdescripcion,$refCampo);
+$formulario 	= $serviciosFunciones->camposTablaModificar($id, "idusuario", "modificarUsuario",$tabla,$lblCambio,$lblreemplazo,$refdescripcion,$refCampo);
 
 
-if ($_SESSION['refroll_predio'] != 1) {
+if ($_SESSION['idroll_predio'] != 1) {
 
 } else {
 
@@ -88,7 +84,7 @@ if ($_SESSION['refroll_predio'] != 1) {
 
 
 
-<title>Gestión: Facturación - Cuentas Por Cobrar</title>
+<title>Gestión: Talleres</title>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
 
@@ -133,11 +129,11 @@ if ($_SESSION['refroll_predio'] != 1) {
 
 <div id="content">
 
-<h3>Facturas</h3>
+<h3>Usuarios</h3>
 
     <div class="boxInfoLargo">
         <div id="headBoxInfo">
-        	<p style="color: #fff; font-size:18px; height:16px;">Modificar Factura</p>
+        	<p style="color: #fff; font-size:18px; height:16px;">Modificar Usuario</p>
         	
         </div>
     	<div class="cuerpoBox">
@@ -183,12 +179,12 @@ if ($_SESSION['refroll_predio'] != 1) {
 
 </div>
 
-<div id="dialog2" title="Eliminar Equipos">
+<div id="dialog2" title="Eliminar Usuarios">
     	<p>
         	<span class="ui-icon ui-icon-alert" style="float: left; margin: 0 7px 20px 0;"></span>
-            ¿Esta seguro que desea eliminar la Factura?.<span id="proveedorEli"></span>
+            ¿Esta seguro que desea eliminar la Usuario?.<span id="proveedorEli"></span>
         </p>
-        <p><strong>Importante: </strong>Si elimina el equipo se perderan todos los datos de esta</p>
+        <p><strong>Importante: </strong>Si elimina el Usuario se perderan todos los datos de este</p>
         <input type="hidden" value="" id="idEliminar" name="idEliminar">
 </div>
 <script type="text/javascript" src="../../js/jquery.dataTables.min.js"></script>
@@ -305,7 +301,7 @@ $(document).ready(function(){
                                             $(".alert").removeClass("alert-danger");
 											$(".alert").removeClass("alert-info");
                                             $(".alert").addClass("alert-success");
-                                            $(".alert").html('<strong>Ok!</strong> Se modifico exitosamente la <strong>Factura</strong>. ');
+                                            $(".alert").html('<strong>Ok!</strong> Se modifico exitosamente el <strong>Usuario</strong>. ');
 											$(".alert").delay(3000).queue(function(){
 												/*aca lo que quiero hacer 
 												  después de los 2 segundos de retraso*/

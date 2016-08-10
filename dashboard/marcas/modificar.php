@@ -22,54 +22,41 @@ $serviciosReferencias 	= new ServiciosReferencias();
 $fecha = date('Y-m-d');
 
 //$resProductos = $serviciosProductos->traerProductosLimite(6);
-$resMenu = $serviciosHTML->menu(utf8_encode($_SESSION['nombre_predio']),"Ciudades",$_SESSION['refroll_predio'],'');
+$resMenu = $serviciosHTML->menu(utf8_encode($_SESSION['nombre_predio']),"Marcas",$_SESSION['refroll_predio'],'');
 
 
 $id = $_GET['id'];
 
-$resResultado = $serviciosReferencias->traerCiudadesPorId($id);
+$resResultado = $serviciosReferencias->traerMarcaPorId($id);
 
 
 /////////////////////// Opciones pagina ///////////////////////////////////////////////
-$singular = "Ciudad";
+$singular = "Marca";
 
-$plural = "Ciudades";
+$plural = "Marcas";
 
-$eliminar = "eliminarCiudades";
+$eliminar = "eliminarMarca";
 
-$modificar = "modificarCiudades";
+$modificar = "modificarMarca";
 
-$idTabla = "idciudad";
+$idTabla = "idmarca";
 
-$tituloWeb = "Gestión: Caracol Bienes Raíces";
+$tituloWeb = "Gestión: Talleres";
 //////////////////////// Fin opciones ////////////////////////////////////////////////
 
 
 /////////////////////// Opciones para la creacion del formulario  /////////////////////
-$tabla 			= "ciudades";
+$tabla 			= "tbmarca";
 
-$lblCambio	 	= array("refprovincia");
-$lblreemplazo	= array("Provincia");
+$lblCambio	 	= array("");
+$lblreemplazo	= array("");
 
 
-$resProvincia 	= $serviciosReferencias->traerProvincias();
-$cadRef = '';
-while ($rowTT = mysql_fetch_array($resProvincia)) {
-	if ($rowTT[0] == mysql_result($resResultado,0,0)) {
-		$cadRef = $cadRef.'<option value="'.$rowTT[0].'" selected>'.utf8_encode($rowTT[1]).'</option>';
-	} else {
-		$cadRef = $cadRef.'<option value="'.$rowTT[0].'">'.utf8_encode($rowTT[1]).'</option>';
-	}
-	
-}
+$cadRef 	= '';
 
-$refdescripcion = array(0 => $cadRef);
-$refCampo 	=  array("refprovincia");
+$refdescripcion = array();
+$refCampo 	=  array();
 //////////////////////////////////////////////  FIN de los opciones //////////////////////////
-
-
-
-
 
 
 $formulario 	= $serviciosFunciones->camposTablaModificar($id, $idTabla, $modificar,$tabla,$lblCambio,$lblreemplazo,$refdescripcion,$refCampo);

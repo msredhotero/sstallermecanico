@@ -12,28 +12,25 @@ if (!isset($_SESSION['usua_predio']))
 include ('../../includes/funciones.php');
 include ('../../includes/funcionesUsuarios.php');
 include ('../../includes/funcionesHTML.php');
-include ('../../includes/funcionesFacturas.php');
-include ('../../includes/funcionesClientes.php');
-include ('../../includes/funcionesEmpresas.php');
+include ('../../includes/funcionesReferencias.php');
+
 
 $serviciosFunciones = new Servicios();
 $serviciosUsuario 	= new ServiciosUsuarios();
 $serviciosHTML 		= new ServiciosHTML();
-$serviciosFactuas 	= new ServiciosFacturas();
-$serviciosClientes	= new ServiciosClientes();
-$serviciosEmpresas	= new ServiciosEmpresas();
+$serviciosReferencias = new ServiciosReferencias();
 
 $fecha = date('Y-m-d');
 
 //$resProductos = $serviciosProductos->traerProductosLimite(6);
-$resMenu = $serviciosHTML->menu(utf8_encode($_SESSION['nombre_predio']),"Usuarios",$_SESSION['refroll_predio'],utf8_encode($_SESSION['usua_empresa']));
+$resMenu = $serviciosHTML->menu(utf8_encode($_SESSION['nombre_predio']),"Usuarios",$_SESSION['refroll_predio'],'');
 
 
 
 /////////////////////// Opciones para la creacion del formulario  /////////////////////
 $tabla 			= "dbusuarios";
 
-$lblCambio	 	= array("refroll","nombrecompleto");
+$lblCambio	 	= array("refroles","nombrecompleto");
 $lblreemplazo	= array("Perfil","Nombre Completo");
 
 if ($_SESSION['idroll_predio'] != 1) {
@@ -44,15 +41,11 @@ if ($_SESSION['idroll_predio'] != 1) {
 }
 
 
-$cadRef = '';
-while ($rowTT = mysql_fetch_array($resRoles)) {
-	$cadRef = $cadRef.'<option value="'.$rowTT[0].'">'.utf8_encode($rowTT[1]).'</option>';
-	
-}
+$cadRef = $serviciosFunciones->devolverSelectBox($resRoles,array(1),'');
 
 
 $refdescripcion = array(0 => $cadRef);
-$refCampo 	=  array("refroll"); 
+$refCampo 	=  array("refroles"); 
 //////////////////////////////////////////////  FIN de los opciones //////////////////////////
 
 
@@ -96,7 +89,7 @@ if ($_SESSION['idroll_predio'] != 1) {
 
 
 
-<title>Gestión: Facturación - Cuentas Por Cobrar</title>
+<title>Gestión: Talleres</title>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
 
