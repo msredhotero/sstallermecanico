@@ -22,27 +22,27 @@ $serviciosReferencias 	= new ServiciosReferencias();
 $fecha = date('Y-m-d');
 
 //$resProductos = $serviciosProductos->traerProductosLimite(6);
-$resMenu = $serviciosHTML->menu(utf8_encode($_SESSION['nombre_predio']),"Marcas",$_SESSION['refroll_predio'],'');
+$resMenu = $serviciosHTML->menu(utf8_encode($_SESSION['nombre_predio']),"Clientes",$_SESSION['refroll_predio'],'');
 
 
 /////////////////////// Opciones pagina ///////////////////////////////////////////////
-$singular = "Marca";
+$singular = "Cliente";
 
-$plural = "Marcas";
+$plural = "Clientes";
 
-$eliminar = "eliminarMarca";
+$eliminar = "eliminarClientes";
 
-$insertar = "insertarMarca";
+$insertar = "insertarClientes";
 
 $tituloWeb = "Gestión: Talleres";
 //////////////////////// Fin opciones ////////////////////////////////////////////////
 
 
 /////////////////////// Opciones para la creacion del formulario  /////////////////////
-$tabla 			= "tbmarca";
+$tabla 			= "dbclientes";
 
-$lblCambio	 	= array("");
-$lblreemplazo	= array("");
+$lblCambio	 	= array("nrodocumento","fechanacimiento","telefono","direccion");
+$lblreemplazo	= array("Nro Documento","Fecha Nacimiento","Teléfono","dirección");
 
 
 $cadRef 	= '';
@@ -54,9 +54,14 @@ $refCampo 	=  array();
 
 
 
-/////////////////////// Opciones para la creacion del view  /////////////////////
-$cabeceras 		= "	<th>Marca</th>
-					<th>Activo</th>";
+/////////////////////// Opciones para la creacion del view  apellido,nombre,nrodocumento,fechanacimiento,direccion,telefono,email/////////////////////
+$cabeceras 		= "	<th>Apellido</th>
+					<th>Nombre</th>
+					<th>Nro Documento</th>
+					<th>Fecha Nacimiento</th>
+					<th>Dirección</th>
+					<th>Teléfono</th>
+					<th>Email</th>";
 
 //////////////////////////////////////////////  FIN de los opciones //////////////////////////
 
@@ -65,7 +70,7 @@ $cabeceras 		= "	<th>Marca</th>
 
 $formulario 	= $serviciosFunciones->camposTabla($insertar ,$tabla,$lblCambio,$lblreemplazo,$refdescripcion,$refCampo);
 
-$lstCargados 	= $serviciosFunciones->camposTablaView($cabeceras,$serviciosReferencias->traerMarca(),2);
+$lstCargados 	= $serviciosFunciones->camposTablaView($cabeceras,$serviciosReferencias->traerClientes(),7);
 
 
 
@@ -108,7 +113,7 @@ if ($_SESSION['refroll_predio'] != 1) {
 	<link href='http://fonts.googleapis.com/css?family=Lato&subset=latin,latin-ext' rel='stylesheet' type='text/css'>
     <!-- Latest compiled and minified JavaScript -->
     <script src="../../bootstrap/js/bootstrap.min.js"></script>
-
+	<link rel="stylesheet" href="../../css/bootstrap-datetimepicker.min.css">
 	<style type="text/css">
 		
   
@@ -198,6 +203,9 @@ if ($_SESSION['refroll_predio'] != 1) {
 </div>
 <script type="text/javascript" src="../../js/jquery.dataTables.min.js"></script>
 <script src="../../bootstrap/js/dataTables.bootstrap.js"></script>
+
+<script src="../../js/bootstrap-datetimepicker.min.js"></script>
+<script src="../../js/bootstrap-datetimepicker.es.js"></script>
 
 <script type="text/javascript">
 $(document).ready(function(){
@@ -358,6 +366,20 @@ $(document).ready(function(){
 		}
     });
 
+});
+</script>
+
+<script type="text/javascript">
+$('.form_date').datetimepicker({
+	language:  'es',
+	weekStart: 1,
+	todayBtn:  1,
+	autoclose: 1,
+	todayHighlight: 1,
+	startView: 2,
+	minView: 2,
+	forceParse: 0,
+	format: 'dd/mm/yyyy'
 });
 </script>
 <?php } ?>
