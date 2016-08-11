@@ -14,73 +14,65 @@ include ('../../includes/funcionesUsuarios.php');
 include ('../../includes/funcionesHTML.php');
 include ('../../includes/funcionesReferencias.php');
 
-$serviciosFunciones 	= new Servicios();
-$serviciosUsuario 		= new ServiciosUsuarios();
-$serviciosHTML 			= new ServiciosHTML();
+$serviciosFunciones = new Servicios();
+$serviciosUsuario 	= new ServiciosUsuarios();
+$serviciosHTML 		= new ServiciosHTML();
 $serviciosReferencias 	= new ServiciosReferencias();
 
 $fecha = date('Y-m-d');
 
 //$resProductos = $serviciosProductos->traerProductosLimite(6);
-$resMenu = $serviciosHTML->menu(utf8_encode($_SESSION['nombre_predio']),"Vehiculos",$_SESSION['refroll_predio'],'');
+$resMenu = $serviciosHTML->menu(utf8_encode($_SESSION['nombre_predio']),"Ordenes",$_SESSION['refroll_predio'],'');
+
+
+$id = $_GET['id'];
+
+$resResultado = $serviciosReferencias->traerOrdenesPorId($id);
 
 
 /////////////////////// Opciones pagina ///////////////////////////////////////////////
-$singular = "Vehiculo";
+$singular = "Orden";
 
-$plural = "Vehiculos";
+$plural = "Ordenes";
 
-$eliminar = "eliminarVehiculos";
+$eliminar = "eliminarOrdenes";
 
-$insertar = "insertarVehiculos";
+$modificar = "modificarOrdenes";
+
+$idTabla = "idorden";
 
 $tituloWeb = "Gestión: Talleres";
 //////////////////////// Fin opciones ////////////////////////////////////////////////
 
 
 /////////////////////// Opciones para la creacion del formulario  /////////////////////
-$tabla 			= "dbvehiculos";
+$tabla 			= "dbordenes";
 
-$lblCambio	 	= array("refmodelo","reftipovehiculo", "anio");
-$lblreemplazo	= array("Marca/Modelo", "Tipo", "Año");
+$lblCambio	 	= array("refclientevehiculos","fechacrea","usuacrea","detallereparacion","refestados");
+$lblreemplazo	= array("Cliente - Vehiculo", "Fecha Crea", "Usuario Crea","Detalle Reparación","Estado");
 
 
-$resModelo 	= $serviciosReferencias->traerModelo();
-$cadRef 	= $serviciosFunciones->devolverSelectBox($resModelo,array(2,1),' - ');
+$resEstado 	= $serviciosReferencias->traerEstados();
+$cadRef 	= $serviciosFunciones->devolverSelectBoxActivo($resEstado,array(1),'',mysql_result($resResultado,0,'refestados'));
 
-$resTipo 	= $serviciosReferencias->traerTipovehiculo();
-$cadRef2 	= $serviciosFunciones->devolverSelectBox($resTipo,array(1),'');
+$resVehiculos 	= $serviciosReferencias->traerClientevehiculos();
+$cadRef2 	= $serviciosFunciones->devolverSelectBoxActivo($resVehiculos,array(1,2),' - ',mysql_result($resResultado,0,'refclientevehiculos'));
 
-$resClientes= $serviciosReferencias->traerClientes();
-$cadClientes= $serviciosFunciones->devolverSelectBox($resClientes,array(1,2),' ');
+$nroOrden	= mysql_result($resResultado,0,'numero');
 
 $refdescripcion = array(0 => $cadRef,1 => $cadRef2);
-$refCampo 	=  array("refmodelo","reftipovehiculo");
+$refCampo 	=  array("refestados","refclientevehiculos");
 //////////////////////////////////////////////  FIN de los opciones //////////////////////////
 
 
 
 
-/////////////////////// Opciones para la creacion del view  patente,refmodelo,reftipovehiculo,anio/////////////////////
-$cabeceras 		= "	<th>Patente</th>
-					<th>Dueño</th>
-					<th>Marca</th>
-					<th>Modelo</th>
-					<th>Tipo</th>
-					<th>Año</th>";
-
-//////////////////////////////////////////////  FIN de los opciones //////////////////////////
 
 
+$formulario 	= $serviciosFunciones->camposTablaModificar($id, $idTabla, $modificar,$tabla,$lblCambio,$lblreemplazo,$refdescripcion,$refCampo);
 
 
-$formulario 	= $serviciosFunciones->camposTabla($insertar ,$tabla,$lblCambio,$lblreemplazo,$refdescripcion,$refCampo);
-
-$lstCargados 	= $serviciosFunciones->camposTablaView($cabeceras,$serviciosReferencias->traerVehiculosClientes(),6);
-
-
-
-if ($_SESSION['refroll_predio'] != 1) {
+if ($_SESSION['idroll_predio'] != 1) {
 
 } else {
 
@@ -149,28 +141,16 @@ if ($_SESSION['refroll_predio'] != 1) {
 
     <div class="boxInfoLargo">
         <div id="headBoxInfo">
-        	<p style="color: #fff; font-size:18px; height:16px;">Carga de <?php echo $plural; ?></p>
+        	<p style="color: #fff; font-size:18px; height:16px;">Modificar <?php echo $singular; ?></p>
         	
         </div>
     	<div class="cuerpoBox">
         	<form class="form-inline formulario" role="form">
-        	<div class="row">
+        	
+			<div class="row">
 			<?php echo $formulario; ?>
             </div>
-            <hr>
-            <h4><span class="glyphicon glyphicon-link"></span> Asignar el vehiculo a un Dueño o Responsable</h4>
-            <div style="width:100%; height:2px; background-color:#e9e9e9; border-bottom:1px solid #797997;"></div>
-            <div class="row">
-            	<div class="form-group col-md-6">
-                    <label for="refclientes" class="control-label" style="text-align:left"><span class="glyphicon glyphicon-user"></span> Lista de Clientes</label>
-                    <div class="input-group col-md-12" style="margin-top:5px;">
-                        <select data-placeholder="selecione el cliente..." id="refclientes" name="refclientes" class="chosen-select form-control" style="width:450px;" tabindex="2">
-            				<option value=""></option>
-							<?php echo $cadClientes; ?>
-                		</select>
-                    </div>
-                </div>
-            </div>
+            
             
             <div class='row' style="margin-left:25px; margin-right:25px;">
                 <div class='alert'>
@@ -185,7 +165,13 @@ if ($_SESSION['refroll_predio'] != 1) {
                 <div class="col-md-12">
                 <ul class="list-inline" style="margin-top:15px;">
                     <li>
-                        <button type="button" class="btn btn-primary" id="cargar" style="margin-left:0px;">Guardar</button>
+                        <button type="button" class="btn btn-warning" id="cargar" style="margin-left:0px;">Modificar</button>
+                    </li>
+                    <li>
+                        <button type="button" class="btn btn-danger varborrar" id="<?php echo $id; ?>" style="margin-left:0px;">Eliminar</button>
+                    </li>
+                    <li>
+                        <button type="button" class="btn btn-default volver" style="margin-left:0px;">Volver</button>
                     </li>
                 </ul>
                 </div>
@@ -194,31 +180,19 @@ if ($_SESSION['refroll_predio'] != 1) {
     	</div>
     </div>
     
-    <div class="boxInfoLargo">
-        <div id="headBoxInfo">
-        	<p style="color: #fff; font-size:18px; height:16px;"><?php echo $plural; ?> Cargados</p>
-        	
-        </div>
-    	<div class="cuerpoBox">
-        	<?php echo $lstCargados; ?>
-    	</div>
-    </div>
-    
-    
-
-    
     
    
 </div>
 
 
 </div>
+
 <div id="dialog2" title="Eliminar <?php echo $singular; ?>">
     	<p>
         	<span class="ui-icon ui-icon-alert" style="float: left; margin: 0 7px 20px 0;"></span>
             ¿Esta seguro que desea eliminar el <?php echo $singular; ?>?.<span id="proveedorEli"></span>
         </p>
-        <p><strong>Importante: </strong>Si elimina el <?php echo $singular; ?> se perderan todos los datos de este</p>
+        <p><strong>Importante: </strong>Si elimina el equipo se perderan todos los datos de este</p>
         <input type="hidden" value="" id="idEliminar" name="idEliminar">
 </div>
 <script type="text/javascript" src="../../js/jquery.dataTables.min.js"></script>
@@ -226,35 +200,21 @@ if ($_SESSION['refroll_predio'] != 1) {
 
 <script type="text/javascript">
 $(document).ready(function(){
-	$('#example').dataTable({
-		"order": [[ 0, "asc" ]],
-		"language": {
-			"emptyTable":     "No hay datos cargados",
-			"info":           "Mostrar _START_ hasta _END_ del total de _TOTAL_ filas",
-			"infoEmpty":      "Mostrar 0 hasta 0 del total de 0 filas",
-			"infoFiltered":   "(filtrados del total de _MAX_ filas)",
-			"infoPostFix":    "",
-			"thousands":      ",",
-			"lengthMenu":     "Mostrar _MENU_ filas",
-			"loadingRecords": "Cargando...",
-			"processing":     "Procesando...",
-			"search":         "Buscar:",
-			"zeroRecords":    "No se encontraron resultados",
-			"paginate": {
-				"first":      "Primero",
-				"last":       "Ultimo",
-				"next":       "Siguiente",
-				"previous":   "Anterior"
-			},
-			"aria": {
-				"sortAscending":  ": activate to sort column ascending",
-				"sortDescending": ": activate to sort column descending"
-			}
-		  }
-	} );
 	
-
-	$("#example").on("click",'.varborrar', function(){
+	$('#usuacrea').attr('value','<?php echo mysql_result($resResultado,0,'usuacrea'); ?>');
+	$('#usuamodi').attr('value','<?php echo utf8_encode($_SESSION['nombre_predio']); ?>');
+	
+	$('#numero').attr('value','<?php echo $nroOrden; ?>');
+	$('#numero').attr('readonly', true);
+	
+	
+	$('.volver').click(function(event){
+		 
+		url = "index.php";
+		$(location).attr('href',url);
+	});//fin del boton modificar
+	
+	$('.varborrar').click(function(event){
 		  usersid =  $(this).attr("id");
 		  if (!isNaN(usersid)) {
 			$("#idEliminar").val(usersid);
@@ -267,17 +227,6 @@ $(document).ready(function(){
 			alert("Error, vuelva a realizar la acción.");	
 		  }
 	});//fin del boton eliminar
-	
-	$("#example").on("click",'.varmodificar', function(){
-		  usersid =  $(this).attr("id");
-		  if (!isNaN(usersid)) {
-			
-			url = "modificar.php?id=" + usersid;
-			$(location).attr('href',url);
-		  } else {
-			alert("Error, vuelva a realizar la acción.");	
-		  }
-	});//fin del boton modificar
 
 	 $( "#dialog2" ).dialog({
 		 	
@@ -316,7 +265,8 @@ $(document).ready(function(){
 		 
 		 
 	 		}); //fin del dialogo para eliminar
-			
+	
+	
 	<?php 
 		echo $serviciosHTML->validacion($tabla);
 	
@@ -355,7 +305,7 @@ $(document).ready(function(){
                                             $(".alert").removeClass("alert-danger");
 											$(".alert").removeClass("alert-info");
                                             $(".alert").addClass("alert-success");
-                                            $(".alert").html('<strong>Ok!</strong> Se cargo exitosamente el <strong><?php echo $singular; ?></strong>. ');
+                                            $(".alert").html('<strong>Ok!</strong> Se modifico exitosamente el <strong><?php echo $singular; ?></strong>. ');
 											$(".alert").delay(3000).queue(function(){
 												/*aca lo que quiero hacer 
 												  después de los 2 segundos de retraso*/
@@ -363,8 +313,8 @@ $(document).ready(function(){
 												
 											});
 											$("#load").html('');
-											url = "index.php";
-											$(location).attr('href',url);
+											//url = "index.php";
+											//$(location).attr('href',url);
                                             
 											
                                         } else {

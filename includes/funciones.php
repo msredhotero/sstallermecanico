@@ -173,6 +173,8 @@ class Servicios {
 		$sql	=	"show columns from ".$tabla;
 		$res 	=	$this->query($sql,0);
 		
+		$ocultar = array("fechacrea","fechamodi","usuacrea","usuamodi");
+		
 		$camposEscondido = "";
 		/* Analizar para despues */
 		/*if (count($refencias) > 0) {
@@ -206,11 +208,17 @@ class Servicios {
 					$i = $i + 1;
 				}
 				
+				if (in_array($row[0],$ocultar)) {
+					$lblOculta = "none";	
+				} else {
+					$lblOculta = "block";
+				}
+				
 				if ($row[3] != 'PRI') {
 					if (strpos($row[1],"decimal") !== false) {
 						$form	=	$form.'
 						
-						<div class="form-group col-md-6">
+						<div class="form-group col-md-6" style="display:'.$lblOculta.'">
 							<label for="'.$label.'" class="control-label" style="text-align:left">'.ucwords($label).'</label>
 							<div class="input-group col-md-12">
 								<span class="input-group-addon">$</span>
@@ -239,21 +247,44 @@ class Servicios {
 								$i = $i + 1;
 							}*/
 							
-							$form	=	$form.'
+							$autocompletar = array("refclientevehiculos");
 							
-							<div class="form-group col-md-6">
-								<label for="'.$campo.'" class="control-label" style="text-align:left">'.$label.'</label>
-								<div class="input-group col-md-12">
-									<select class="form-control" id="'.strtolower($campo).'" name="'.strtolower($campo).'">
-										';
+							if (in_array($campo,$autocompletar)) {
+								$form	=	$form.'
 							
-							$form	=	$form.$option;
-							
-							$form	=	$form.'		</select>
+								<div class="form-group col-md-6" style="display:'.$lblOculta.'">
+									<label for="'.$campo.'" class="control-label" style="text-align:left">'.$label.'</label>
+									<div class="input-group col-md-12">
+										
+										<select data-placeholder="selecione el cliente..." id="'.strtolower($campo).'" name="'.strtolower($campo).'" class="chosen-select" style="width:450px;" tabindex="2">
+            								<option value=""></option>
+											';
+								
+								$form	=	$form.$option;
+								
+								$form	=	$form.'		</select>
+									</div>
 								</div>
-							</div>
+								
+								';								
+							} else {
 							
-							';
+								$form	=	$form.'
+								
+								<div class="form-group col-md-6" style="display:'.$lblOculta.'">
+									<label for="'.$campo.'" class="control-label" style="text-align:left">'.$label.'</label>
+									<div class="input-group col-md-12">
+										<select class="form-control" id="'.strtolower($campo).'" name="'.strtolower($campo).'">
+											';
+								
+								$form	=	$form.$option;
+								
+								$form	=	$form.'		</select>
+									</div>
+								</div>
+								
+								';
+							}
 							
 						} else {
 							
@@ -263,7 +294,7 @@ class Servicios {
 								
 								$form	=	$form.'
 								
-								<div class="form-group col-md-6">
+								<div class="form-group col-md-6" style="display:'.$lblOculta.'">
 									<label for="'.$campo.'" class="control-label" style="text-align:left">'.$label.'</label>
 									<div class="input-group col-md-12 fontcheck">
 										<input type="checkbox" class="form-control" id="'.$campo.'" name="'.$campo.'" style="width:50px;" required> <p>Si/No</p>
@@ -281,7 +312,7 @@ class Servicios {
 									
 									$form	=	$form.'
 									
-									<div class="form-group col-md-6">
+									<div class="form-group col-md-6" style="display:'.$lblOculta.'">
 										<label for="'.$campo.'" class="control-label" style="text-align:left">'.$label.'</label>
 										<div class="input-group date form_date col-md-6" data-date="" data-date-format="dd MM yyyy" data-link-field="'.$campo.'" data-link-format="yyyy-mm-dd">
 											<input class="form-control" size="50" type="text" value="" readonly>
@@ -313,7 +344,7 @@ class Servicios {
 										
 										$form	=	$form.'
 										
-										<div class="form-group col-md-6">
+										<div class="form-group col-md-6" style="display:'.$lblOculta.'">
 											<label for="'.$campo.'" class="control-label" style="text-align:left">'.$label.'</label>
 											<div class="input-group bootstrap-timepicker col-md-6">
 												<input id="timepicker2" name="'.$campo.'" class="form-control">
@@ -333,7 +364,7 @@ class Servicios {
 											
 											$form	=	$form.'
 											
-											<div class="form-group col-md-12">
+											<div class="form-group col-md-12" style="display:'.$lblOculta.'">
 												<label for="'.$campo.'" class="control-label" style="text-align:left">'.$label.'</label>
 												<div class="input-group col-md-12">
 													<textarea name="'.$campo.'" id="'.$campo.'" rows="200" cols="160">
@@ -355,7 +386,7 @@ class Servicios {
 												
 												$form	=	$form.'
 												
-												<div class="form-group col-md-6">
+												<div class="form-group col-md-6" style="display:'.$lblOculta.'">
 													<label for="'.$campo.'" class="control-label" style="text-align:left">'.$label.'</label>
 													<div class="input-group col-md-12">
 														<textarea type="text" rows="10" cols="6" class="form-control" id="'.$campo.'" name="'.$campo.'" placeholder="Ingrese el '.$label.'..." required></textarea>
@@ -369,9 +400,10 @@ class Servicios {
 												$label = ucwords($label);
 												$campo = strtolower($row[0]);
 												
+
 												$form	=	$form.'
 												
-												<div class="form-group col-md-6">
+												<div class="form-group col-md-6" style="display:'.$lblOculta.'">
 													<label for="'.$campo.'" class="control-label" style="text-align:left">'.$label.'</label>
 													<div class="input-group col-md-12">
 														<input type="text" class="form-control" id="'.$campo.'" name="'.$campo.'" placeholder="Ingrese el '.$label.'..." required>
@@ -379,6 +411,7 @@ class Servicios {
 												</div>
 												
 												';
+												
 											}
 										}
 									}
@@ -427,6 +460,8 @@ class Servicios {
 		$sql	=	"show columns from ".$tabla;
 		$res 	=	$this->query($sql,0);
 		
+		$ocultar = array("fechacrea","fechamodi","usuacrea","usuamodi");
+		
 		$camposEscondido = "";
 		/* Analizar para despues */
 		/*if (count($refencias) > 0) {
@@ -460,11 +495,17 @@ class Servicios {
 					$i = $i + 1;
 				}
 				
+				if (in_array($row[0],$ocultar)) {
+					$lblOculta = "none";	
+				} else {
+					$lblOculta = "block";
+				}
+				
 				if ($row[3] != 'PRI') {
 					if (strpos($row[1],"decimal") !== false) {
 						$form	=	$form.'
 						
-						<div class="form-group col-md-6">
+						<div class="form-group col-md-6" style="display:'.$lblOculta.'">
 							<label for="'.$label.'" class="control-label" style="text-align:left">'.ucwords($label).'</label>
 							<div class="input-group col-md-12">
 								<span class="input-group-addon">$</span>
@@ -495,7 +536,7 @@ class Servicios {
 							
 							$form	=	$form.'
 							
-							<div class="form-group col-md-6">
+							<div class="form-group col-md-6" style="display:'.$lblOculta.'">
 								<label for="'.$campo.'" class="control-label" style="text-align:left">'.$label.'</label>
 								<div class="input-group col-md-12">
 									<select class="form-control" id="'.strtolower($campo).'" name="'.strtolower($campo).'">
@@ -522,7 +563,7 @@ class Servicios {
 								
 								$form	=	$form.'
 								
-								<div class="form-group col-md-6">
+								<div class="form-group col-md-6" style="display:'.$lblOculta.'">
 									<label for="'.$campo.'" class="control-label" style="text-align:left">'.$label.'</label>
 									<div class="input-group col-md-12 fontcheck">
 										<input type="checkbox" '.$activo.' class="form-control" id="'.$campo.'" name="'.$campo.'" style="width:50px;" required> <p>Si/No</p>
@@ -540,7 +581,7 @@ class Servicios {
 									
 									$form	=	$form.'
 									
-									<div class="form-group col-md-6">
+									<div class="form-group col-md-6" style="display:'.$lblOculta.'">
 										<label for="'.$campo.'" class="control-label" style="text-align:left">'.$label.'</label>
 										<div class="input-group date form_date col-md-6" data-date="" data-date-format="dd MM yyyy" data-link-field="'.$campo.'" data-link-format="yyyy-mm-dd">
 											<input class="form-control" value="'.mysql_result($resMod,0,$row[0]).'" size="50" type="text" value="" readonly>
@@ -572,7 +613,7 @@ class Servicios {
 										
 										$form	=	$form.'
 										
-										<div class="form-group col-md-6">
+										<div class="form-group col-md-6" style="display:'.$lblOculta.'">
 											<label for="'.$campo.'" class="control-label" style="text-align:left">'.$label.'</label>
 											<div class="input-group bootstrap-timepicker col-md-6">
 												<input id="timepicker2" value="'.mysql_result($resMod,0,$row[0]).'" name="'.$campo.'" class="form-control">
@@ -592,7 +633,7 @@ class Servicios {
 											
 											$form	=	$form.'
 											
-											<div class="form-group col-md-6">
+											<div class="form-group col-md-6" style="display:'.$lblOculta.'">
 												<label for="'.$campo.'" class="control-label" style="text-align:left">'.$label.'</label>
 												<div class="input-group col-md-12">
 													<textarea type="text" rows="10" cols="6" class="form-control" id="'.$campo.'" name="'.$campo.'" placeholder="Ingrese el '.$label.'..." required>'.utf8_encode(mysql_result($resMod,0,$row[0])).'</textarea>
@@ -610,7 +651,7 @@ class Servicios {
 											
 											$form	=	$form.'
 											
-											<div class="form-group col-md-12">
+											<div class="form-group col-md-12" style="display:'.$lblOculta.'">
 												<label for="'.$campo.'" class="control-label" style="text-align:left">'.$label.'</label>
 												<div class="input-group col-md-12">
 													<textarea name="'.$campo.'" id="'.$campo.'" rows="200" cols="160">
@@ -630,7 +671,7 @@ class Servicios {
 												
 												$form	=	$form.'
 												
-												<div class="form-group col-md-6">
+												<div class="form-group col-md-6" style="display:'.$lblOculta.'">
 													<label for="'.$campo.'" class="control-label" style="text-align:left">'.$label.'</label>
 													<div class="input-group col-md-12">
 														<input type="text" value="'.(mysql_result($resMod,0,$row[0])).'" class="form-control" id="'.$campo.'" name="'.$campo.'" placeholder="Ingrese el '.$label.'..." required>

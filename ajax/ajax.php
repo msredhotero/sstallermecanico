@@ -285,6 +285,8 @@ $id = $_POST['id'];
 $res = $serviciosReferencias->eliminarUsuarios($id);
 echo $res;
 }
+
+
 function insertarVehiculos($serviciosReferencias) {
 	$patente 			= str_replace(' ','',ltrim(rtrim($_POST['patente'])));
 	$refmodelo 			= $_POST['refmodelo'];
@@ -292,21 +294,32 @@ function insertarVehiculos($serviciosReferencias) {
 	$anio 				= $_POST['anio'];
 	$refclientes		= $_POST['refclientes'];
 	
-	$res = $serviciosReferencias->insertarVehiculos($patente,$refmodelo,$reftipovehiculo,$anio);
-	
-	if ((integer)$res > 0) {
-		
-		$res2 = $serviciosReferencias->insertarClientevehiculos($refclientes,$res,'1');
-		if ((integer)$res2 > 0) {
-			echo '';	
-		} else {
-			$serviciosReferencias->eliminarVehiculos($res);
-			echo 'Huvo un error al insertar datos del dueño';	
-		}
-		
+	if 	($serviciosReferencias->existePatente($patente) == true) {
+		echo 'La patente ya fue cargada, no pueden existir dos patentes iguales.';
 	} else {
-		echo 'Huvo un error al insertar datos';
+	
+		if (($refclientes == '') || ($refclientes == null)) {
+			echo 'Debe seleccionar un cliente para poder ingresar un vehiculo';
+		} else {
+			$res = $serviciosReferencias->insertarVehiculos($patente,$refmodelo,$reftipovehiculo,$anio);
+		
+			if ((integer)$res > 0) {
+				
+				$res2 = $serviciosReferencias->insertarClientevehiculos($refclientes,$res,'1');
+				if ((integer)$res2 > 0) {
+					echo '';	
+				} else {
+					$serviciosReferencias->eliminarVehiculos($res);
+					echo 'Huvo un error al insertar datos del dueño';	
+				}
+				
+			} else {
+				echo 'Huvo un error al insertar datos';
+			}
+		}
 	}
+	
+	
 }
 function modificarVehiculos($serviciosReferencias) {
 $id = $_POST['id'];

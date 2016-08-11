@@ -113,7 +113,7 @@ if ($_SESSION['idroll_predio'] != 1) {
 	<link href='http://fonts.googleapis.com/css?family=Lato&subset=latin,latin-ext' rel='stylesheet' type='text/css'>
     <!-- Latest compiled and minified JavaScript -->
     <script src="../../bootstrap/js/bootstrap.min.js"></script>
-
+	<link rel="stylesheet" href="../../css/chosen.css">
 	<style type="text/css">
 		
   
@@ -157,9 +157,10 @@ if ($_SESSION['idroll_predio'] != 1) {
             <h4><span class="glyphicon glyphicon-link"></span> Asignar el vehiculo a un Dueño o Responsable</h4>
             <div class="row">
             	<div class="form-group col-md-6">
-                    <label for="refclientes" class="control-label" style="text-align:left">Clientes</label>
+                    <label for="refclientes" class="control-label" style="text-align:left"><span class="glyphicon glyphicon-user"></span> Lista de Clientes</label>
                     <div class="input-group col-md-12">
-                        <select class="form-control" id="refclientes" name="refclientes">
+                        <select data-placeholder="selecione el cliente..." id="refclientes" name="refclientes" class="chosen-select form-control" style="width:450px;" tabindex="2">
+            				<option value=""></option>
 							<?php echo $cadClientes; ?>
                 		</select>
                     </div>
@@ -342,6 +343,19 @@ $(document).ready(function(){
 
 });
 </script>
+<script src="../../js/chosen.jquery.js" type="text/javascript"></script>
+<script type="text/javascript">
+    var config = {
+      '.chosen-select'           : {},
+      '.chosen-select-deselect'  : {allow_single_deselect:true},
+      '.chosen-select-no-single' : {disable_search_threshold:10},
+      '.chosen-select-no-results': {no_results_text:'Oops, nothing found!'},
+      '.chosen-select-width'     : {width:"95%"}
+    }
+    for (var selector in config) {
+      $(selector).chosen(config[selector]);
+    }
+  </script>
 <?php } ?>
 </body>
 </html>

@@ -22,52 +22,52 @@ $serviciosReferencias 	= new ServiciosReferencias();
 $fecha = date('Y-m-d');
 
 //$resProductos = $serviciosProductos->traerProductosLimite(6);
-$resMenu = $serviciosHTML->menu(utf8_encode($_SESSION['nombre_predio']),"Vehiculos",$_SESSION['refroll_predio'],'');
+$resMenu = $serviciosHTML->menu(utf8_encode($_SESSION['nombre_predio']),"Ordenes",$_SESSION['refroll_predio'],'');
 
 
 /////////////////////// Opciones pagina ///////////////////////////////////////////////
-$singular = "Vehiculo";
+$singular = "Orden";
 
-$plural = "Vehiculos";
+$plural = "Ordenes";
 
-$eliminar = "eliminarVehiculos";
+$eliminar = "eliminarOrdenes";
 
-$insertar = "insertarVehiculos";
+$insertar = "insertarOrdenes";
 
 $tituloWeb = "Gestión: Talleres";
 //////////////////////// Fin opciones ////////////////////////////////////////////////
 
 
 /////////////////////// Opciones para la creacion del formulario  /////////////////////
-$tabla 			= "dbvehiculos";
+$tabla 			= "dbordenes";
 
-$lblCambio	 	= array("refmodelo","reftipovehiculo", "anio");
-$lblreemplazo	= array("Marca/Modelo", "Tipo", "Año");
+$lblCambio	 	= array("refclientevehiculos","fechacrea","usuacrea","detallereparacion","refestados");
+$lblreemplazo	= array("Cliente - Vehiculo", "Fecha Crea", "Usuario Crea","Detalle Reparación","Estado");
 
 
-$resModelo 	= $serviciosReferencias->traerModelo();
-$cadRef 	= $serviciosFunciones->devolverSelectBox($resModelo,array(2,1),' - ');
+$resEstado 	= $serviciosReferencias->traerEstados();
+$cadRef 	= $serviciosFunciones->devolverSelectBoxActivo($resEstado,array(1),'',5);
 
-$resTipo 	= $serviciosReferencias->traerTipovehiculo();
-$cadRef2 	= $serviciosFunciones->devolverSelectBox($resTipo,array(1),'');
+$resVehiculos 	= $serviciosReferencias->traerClientevehiculos();
+$cadRef2 	= $serviciosFunciones->devolverSelectBox($resVehiculos,array(1,2),' - ');
 
-$resClientes= $serviciosReferencias->traerClientes();
-$cadClientes= $serviciosFunciones->devolverSelectBox($resClientes,array(1,2),' ');
+$nroOrden	= $serviciosReferencias->generarNroOrden();
 
 $refdescripcion = array(0 => $cadRef,1 => $cadRef2);
-$refCampo 	=  array("refmodelo","reftipovehiculo");
+$refCampo 	=  array("refestados","refclientevehiculos");
 //////////////////////////////////////////////  FIN de los opciones //////////////////////////
 
 
 
 
 /////////////////////// Opciones para la creacion del view  patente,refmodelo,reftipovehiculo,anio/////////////////////
-$cabeceras 		= "	<th>Patente</th>
+$cabeceras 		= "	<th>Nro</th>
 					<th>Dueño</th>
-					<th>Marca</th>
-					<th>Modelo</th>
-					<th>Tipo</th>
-					<th>Año</th>";
+					<th>Vehiculo</th>
+					<th>Año</th>
+					<th>Fecha</th>
+					<th>Reparación</th>
+					<th>Estado</th>";
 
 //////////////////////////////////////////////  FIN de los opciones //////////////////////////
 
@@ -76,7 +76,7 @@ $cabeceras 		= "	<th>Patente</th>
 
 $formulario 	= $serviciosFunciones->camposTabla($insertar ,$tabla,$lblCambio,$lblreemplazo,$refdescripcion,$refCampo);
 
-$lstCargados 	= $serviciosFunciones->camposTablaView($cabeceras,$serviciosReferencias->traerVehiculosClientes(),6);
+$lstCargados 	= $serviciosFunciones->camposTablaView($cabeceras,$serviciosReferencias->traerOrdenes(),7);
 
 
 
@@ -157,20 +157,7 @@ if ($_SESSION['refroll_predio'] != 1) {
         	<div class="row">
 			<?php echo $formulario; ?>
             </div>
-            <hr>
-            <h4><span class="glyphicon glyphicon-link"></span> Asignar el vehiculo a un Dueño o Responsable</h4>
-            <div style="width:100%; height:2px; background-color:#e9e9e9; border-bottom:1px solid #797997;"></div>
-            <div class="row">
-            	<div class="form-group col-md-6">
-                    <label for="refclientes" class="control-label" style="text-align:left"><span class="glyphicon glyphicon-user"></span> Lista de Clientes</label>
-                    <div class="input-group col-md-12" style="margin-top:5px;">
-                        <select data-placeholder="selecione el cliente..." id="refclientes" name="refclientes" class="chosen-select form-control" style="width:450px;" tabindex="2">
-            				<option value=""></option>
-							<?php echo $cadClientes; ?>
-                		</select>
-                    </div>
-                </div>
-            </div>
+
             
             <div class='row' style="margin-left:25px; margin-right:25px;">
                 <div class='alert'>
@@ -226,6 +213,13 @@ if ($_SESSION['refroll_predio'] != 1) {
 
 <script type="text/javascript">
 $(document).ready(function(){
+	
+	$('#usuacrea').attr('value','<?php echo utf8_encode($_SESSION['nombre_predio']); ?>');
+	$('#usuamodi').attr('value','<?php echo utf8_encode($_SESSION['nombre_predio']); ?>');
+	
+	$('#numero').attr('value','<?php echo $nroOrden; ?>');
+	$('#numero').attr('readonly', true);
+	
 	$('#example').dataTable({
 		"order": [[ 0, "asc" ]],
 		"language": {
