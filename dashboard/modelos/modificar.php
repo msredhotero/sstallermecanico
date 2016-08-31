@@ -22,48 +22,41 @@ $serviciosReferencias 	= new ServiciosReferencias();
 $fecha = date('Y-m-d');
 
 //$resProductos = $serviciosProductos->traerProductosLimite(6);
-$resMenu = $serviciosHTML->menu(utf8_encode($_SESSION['nombre_predio']),"Vehiculos",$_SESSION['refroll_predio'],'');
+$resMenu = $serviciosHTML->menu(utf8_encode($_SESSION['nombre_predio']),"Modelos",$_SESSION['refroll_predio'],'');
 
 
 $id = $_GET['id'];
 
-$resResultado = $serviciosReferencias->traerVehiculosPorId($id);
+$resResultado = $serviciosReferencias->traerModeloPorId($id);
 
 
 /////////////////////// Opciones pagina ///////////////////////////////////////////////
-$singular = "Vehiculo";
+$singular = "Modelo";
 
-$plural = "Vehiculos";
+$plural = "Modelos";
 
-$eliminar = "eliminarVehiculos";
+$eliminar = "eliminarModelo";
 
-$modificar = "modificarVehiculos";
+$modificar = "modificarModelo";
 
-$idTabla = "idvehiculo";
+$idTabla = "idmodelo";
 
 $tituloWeb = "Gestión: Talleres";
 //////////////////////// Fin opciones ////////////////////////////////////////////////
 
 
 /////////////////////// Opciones para la creacion del formulario  /////////////////////
-$tabla 			= "dbvehiculos";
+$tabla 			= "tbmodelo";
 
-$lblCambio	 	= array("refmodelo","reftipovehiculo", "anio");
-$lblreemplazo	= array("Marca/Modelo", "Tipo", "Año");
+$lblCambio	 	= array("refmarca");
+$lblreemplazo	= array("Marca");
 
 
-$resModelo 	= $serviciosReferencias->traerModelo();
-$cadRef 	= $serviciosFunciones->devolverSelectBoxActivo($resModelo,array(2,1),' - ',mysql_result($resResultado,0,'refmodelo'));
+$resMarca 	= $serviciosReferencias->traerMarca();
+$cadRef 	= $serviciosFunciones->devolverSelectBoxActivo($resMarca,array(1),'',mysql_result($resResultado,0,'refmarca'));
 
-$resTipo 	= $serviciosReferencias->traerTipovehiculo();
-$cadRef2 	= $serviciosFunciones->devolverSelectBoxActivo($resTipo,array(1),'',mysql_result($resResultado,0,'reftipovehiculo'));
-
-$resClientes= $serviciosReferencias->traerClientes();
-$resVehiculoCliente = $serviciosReferencias->traerClientevehiculosPorVehiculo($id);
-$cadClientes= $serviciosFunciones->devolverSelectBoxActivo($resClientes,array(1,2),' ',mysql_result($resVehiculoCliente,0,'refclientes'));
-
-$refdescripcion = array(0 => $cadRef,1 => $cadRef2);
-$refCampo 	=  array("refmodelo","reftipovehiculo");
+$refdescripcion = array(0 => $cadRef);
+$refCampo 	=  array("refmarca");
 //////////////////////////////////////////////  FIN de los opciones //////////////////////////
 
 
@@ -153,18 +146,6 @@ if ($_SESSION['idroll_predio'] != 1) {
 			<?php echo $formulario; ?>
             </div>
             
-            <hr>
-            <h4><span class="glyphicon glyphicon-link"></span> Asignar el vehiculo a un Dueño o Responsable</h4>
-            <div class="row">
-            	<div class="form-group col-md-6">
-                    <label for="refclientes" class="control-label" style="text-align:left">Clientes</label>
-                    <div class="input-group col-md-12">
-                        <select class="form-control" id="refclientes" name="refclientes">
-							<?php echo $cadClientes; ?>
-                		</select>
-                    </div>
-                </div>
-            </div>
             
             <div class='row' style="margin-left:25px; margin-right:25px;">
                 <div class='alert'>

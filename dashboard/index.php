@@ -140,17 +140,13 @@ $lstCargados 	= $serviciosFunciones->camposTablaView($cabeceras,$serviciosRefere
         <p><strong>Importante: </strong>Si elimina el <?php echo $singular; ?> se perderan todos los datos de este</p>
         <input type="hidden" value="" id="idEliminar" name="idEliminar">
 </div>
-<script type="text/javascript" src="../../js/jquery.dataTables.min.js"></script>
-<script src="../../bootstrap/js/dataTables.bootstrap.js"></script>
+<script type="text/javascript" src="../js/jquery.dataTables.min.js"></script>
+<script src="../bootstrap/js/dataTables.bootstrap.js"></script>
 
 <script type="text/javascript">
 $(document).ready(function(){
 	
-	$('#usuacrea').attr('value','<?php echo utf8_encode($_SESSION['nombre_predio']); ?>');
-	$('#usuamodi').attr('value','<?php echo utf8_encode($_SESSION['nombre_predio']); ?>');
 	
-	$('#numero').attr('value','<?php echo $nroOrden; ?>');
-	$('#numero').attr('readonly', true);
 	
 	$('#example').dataTable({
 		"order": [[ 0, "asc" ]],

@@ -149,22 +149,22 @@ return $res;
 
 /* PARA Ordenes */
 
-function insertarOrdenes($numero,$refclientevehiculos,$fechacrea,$fechamodi,$usuacrea,$usuamodi,$detallereparacion,$refestados) {
-$sql = "insert into dbordenes(idorden,numero,refclientevehiculos,fechacrea,fechamodi,usuacrea,usuamodi,detallereparacion,refestados)
-values ('','".utf8_decode($numero)."',".$refclientevehiculos.",'".date('Y-m-d')."','".date('Y-m-d')."','".utf8_decode($usuacrea)."','".utf8_decode($usuamodi)."','".utf8_decode($detallereparacion)."',".$refestados.")";
+function insertarOrdenes($numero,$refclientevehiculos,$fechacrea,$fechamodi,$usuacrea,$usuamodi,$detallereparacion,$refestados,$precio) {
+$sql = "insert into dbordenes(idorden,numero,refclientevehiculos,fechacrea,fechamodi,usuacrea,usuamodi,detallereparacion,refestados,precio)
+values ('','".utf8_decode($numero)."',".$refclientevehiculos.",'".utf8_decode($fechacrea)."','".utf8_decode($fechamodi)."','".utf8_decode($usuacrea)."','".utf8_decode($usuamodi)."','".utf8_decode($detallereparacion)."',".$refestados.",".$precio.")";
 $res = $this->query($sql,1);
 return $res;
 }
 
 
-function modificarOrdenes($id,$numero,$refclientevehiculos,$fechacrea,$fechamodi,$usuacrea,$usuamodi,$detallereparacion,$refestados) {
+function modificarOrdenes($id,$numero,$refclientevehiculos,$fechacrea,$fechamodi,$usuacrea,$usuamodi,$detallereparacion,$refestados,$precio) {
 $sql = "update dbordenes
 set
-numero = '".utf8_decode($numero)."',refclientevehiculos = ".$refclientevehiculos.",fechacrea = '".utf8_decode($fechacrea)."',fechamodi = '".date('Y-m-d')."',usuacrea = '".utf8_decode($usuacrea)."',usuamodi = '".utf8_decode($usuamodi)."',detallereparacion = '".utf8_decode($detallereparacion)."',refestados = ".$refestados."
+numero = '".utf8_decode($numero)."',refclientevehiculos = ".$refclientevehiculos.",fechacrea = '".utf8_decode($fechacrea)."',fechamodi = '".utf8_decode($fechamodi)."',usuacrea = '".utf8_decode($usuacrea)."',usuamodi = '".utf8_decode($usuamodi)."',detallereparacion = '".utf8_decode($detallereparacion)."',refestados = ".$refestados.",precio = ".$precio."
 where idorden =".$id;
 $res = $this->query($sql,0);
 return $res;
-}
+} 
 
 
 function eliminarOrdenes($id) {
@@ -202,7 +202,8 @@ o.fechamodi,
 o.usuacrea,
 o.usuamodi,
 o.refclientevehiculos,
-o.refestados
+o.refestados,
+o.precio
 from dbordenes o
 inner join dbclientevehiculos cli ON cli.idclientevehiculo = o.refclientevehiculos
 inner join dbclientes cl ON cl.idcliente = cli.refclientes
@@ -217,7 +218,7 @@ return $res;
 
 
 function traerOrdenesPorId($id) {
-$sql = "select idorden,numero,refclientevehiculos,fechacrea,fechamodi,usuacrea,usuamodi,detallereparacion,refestados from dbordenes where idorden =".$id;
+$sql = "select idorden,numero,refclientevehiculos,fechacrea,fechamodi,usuacrea,usuamodi,detallereparacion,refestados,precio from dbordenes where idorden =".$id;
 $res = $this->query($sql,0);
 return $res;
 }
@@ -659,6 +660,141 @@ return $res;
 
 /* Fin */
 /* /* Fin de la Tabla: tbtipovehiculo*/
+
+
+/* PARA Empleados */
+
+function insertarEmpleados($apellido,$nombre,$nrodocumento,$fechanacimiento,$cuil,$telefono,$telefonofijo,$direccion,$email) {
+$sql = "insert into dbempleados(idempleado,apellido,nombre,nrodocumento,fechanacimiento,cuil,telefono,telefonofijo,direccion,email)
+values ('','".utf8_decode($apellido)."','".utf8_decode($nombre)."','".utf8_decode($nrodocumento)."','".utf8_decode($fechanacimiento)."','".utf8_decode($cuil)."','".utf8_decode($telefono)."','".utf8_decode($telefonofijo)."','".utf8_decode($direccion)."','".utf8_decode($email)."')";
+$res = $this->query($sql,1);
+return $res;
+}
+
+
+function modificarEmpleados($id,$apellido,$nombre,$nrodocumento,$fechanacimiento,$cuil,$telefono,$telefonofijo,$direccion,$email) {
+$sql = "update dbempleados
+set
+apellido = '".utf8_decode($apellido)."',nombre = '".utf8_decode($nombre)."',nrodocumento = '".utf8_decode($nrodocumento)."',fechanacimiento = '".utf8_decode($fechanacimiento)."',cuil = '".utf8_decode($cuil)."',telefono = '".utf8_decode($telefono)."',telefonofijo = '".utf8_decode($telefonofijo)."',direccion = '".utf8_decode($direccion)."',email = '".utf8_decode($email)."'
+where idempleado =".$id;
+$res = $this->query($sql,0);
+return $res;
+}
+
+
+function eliminarEmpleados($id) {
+$sql = "delete from dbempleados where idempleado =".$id;
+$res = $this->query($sql,0);
+return $res;
+}
+
+
+function traerEmpleados() {
+$sql = "select
+e.idempleado,
+e.apellido,
+e.nombre,
+e.nrodocumento,
+e.fechanacimiento,
+e.cuil,
+e.telefono,
+e.telefonofijo,
+e.direccion,
+e.email
+from dbempleados e
+order by 1";
+$res = $this->query($sql,0);
+return $res;
+}
+
+
+function traerEmpleadosPorId($id) {
+$sql = "select idempleado,apellido,nombre,nrodocumento,fechanacimiento,cuil,telefono,telefonofijo,direccion,email from dbempleados where idempleado =".$id;
+$res = $this->query($sql,0);
+return $res;
+}
+
+/* Fin */
+/* /* Fin de la Tabla: dbempleados*/
+
+
+/* PARA Ordenesresponsables */
+
+function insertarOrdenesresponsables($refordenes,$refempleados) {
+$sql = "insert into dbordenesresponsables(idordenresponsables,refordenes,refempleados)
+values ('',".$refordenes.",".$refempleados.")";
+$res = $this->query($sql,1);
+return $res;
+}
+
+
+function modificarOrdenesresponsables($id,$refordenes,$refempleados) {
+$sql = "update dbordenesresponsables
+set
+refordenes = ".$refordenes.",refempleados = ".$refempleados."
+where idordenresponsables =".$id;
+$res = $this->query($sql,0);
+return $res;
+}
+
+
+function eliminarOrdenesresponsables($id) {
+$sql = "delete from dbordenesresponsables where idordenresponsables =".$id;
+$res = $this->query($sql,0);
+return $res;
+}
+
+function eliminarOrdenesresponsablesPorOrden($orden) {
+$sql = "delete from dbordenesresponsables where refordenes =".$orden;
+$res = $this->query($sql,0);
+return $res;
+}
+
+
+function traerOrdenesresponsables() {
+$sql = "select
+o.idordenresponsables,
+o.refordenes,
+o.refempleados
+from dbordenesresponsables o
+inner join dbordenes ord ON ord.idorden = o.refordenes
+inner join dbclientevehiculos cl ON cl.idclientevehiculo = ord.refclientevehiculos
+inner join tbestados es ON es.idestado = ord.refestados
+inner join dbempleados emp ON emp.idempleado = o.refempleados
+order by 1";
+$res = $this->query($sql,0);
+return $res;
+}
+
+function traerResponsablesPorOrden($orden) {
+	$sql = "select
+o.idordenresponsables,
+o.refordenes,
+o.refempleados,
+emp.apellido,
+emp.nombre,
+emp.nrodocumento,
+emp.cuil
+from dbordenesresponsables o
+inner join dbordenes ord ON ord.idorden = o.refordenes
+inner join dbclientevehiculos cl ON cl.idclientevehiculo = ord.refclientevehiculos
+inner join tbestados es ON es.idestado = ord.refestados
+inner join dbempleados emp ON emp.idempleado = o.refempleados
+where o.refordenes = ".$orden."
+order by 1";
+$res = $this->query($sql,0);
+return $res;
+}
+
+function traerOrdenesresponsablesPorId($id) {
+$sql = "select idordenresponsables,refordenes,refempleados from dbordenesresponsables where idordenresponsables =".$id;
+$res = $this->query($sql,0);
+return $res;
+}
+
+/* Fin */
+/* /* Fin de la Tabla: dbordenesresponsables*/
+
 
 
 function query($sql,$accion) {

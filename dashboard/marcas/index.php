@@ -22,27 +22,27 @@ $serviciosReferencias 	= new ServiciosReferencias();
 $fecha = date('Y-m-d');
 
 //$resProductos = $serviciosProductos->traerProductosLimite(6);
-$resMenu = $serviciosHTML->menu(utf8_encode($_SESSION['nombre_predio']),"Clientes",$_SESSION['refroll_predio'],'');
+$resMenu = $serviciosHTML->menu(utf8_encode($_SESSION['nombre_predio']),"Marcas",$_SESSION['refroll_predio'],'');
 
 
 /////////////////////// Opciones pagina ///////////////////////////////////////////////
-$singular = "Cliente";
+$singular = "Marca";
 
-$plural = "Clientes";
+$plural = "Marcas";
 
-$eliminar = "eliminarClientes";
+$eliminar = "eliminarMarca";
 
-$insertar = "insertarClientes";
+$insertar = "insertarMarca";
 
 $tituloWeb = "Gestión: Talleres";
 //////////////////////// Fin opciones ////////////////////////////////////////////////
 
 
 /////////////////////// Opciones para la creacion del formulario  /////////////////////
-$tabla 			= "dbclientes";
+$tabla 			= "tbmarca";
 
-$lblCambio	 	= array("nrodocumento","fechanacimiento","telefono","direccion");
-$lblreemplazo	= array("Nro Documento","Fecha Nacimiento","Teléfono","dirección");
+$lblCambio	 	= array();
+$lblreemplazo	= array();
 
 
 $cadRef 	= '';
@@ -55,13 +55,8 @@ $refCampo 	=  array();
 
 
 /////////////////////// Opciones para la creacion del view  apellido,nombre,nrodocumento,fechanacimiento,direccion,telefono,email/////////////////////
-$cabeceras 		= "	<th>Apellido</th>
-					<th>Nombre</th>
-					<th>Nro Documento</th>
-					<th>Fecha Nacimiento</th>
-					<th>Dirección</th>
-					<th>Teléfono</th>
-					<th>Email</th>";
+$cabeceras 		= "	<th>Marca</th>
+					<th>Activo</th>";
 
 //////////////////////////////////////////////  FIN de los opciones //////////////////////////
 
@@ -70,7 +65,7 @@ $cabeceras 		= "	<th>Apellido</th>
 
 $formulario 	= $serviciosFunciones->camposTabla($insertar ,$tabla,$lblCambio,$lblreemplazo,$refdescripcion,$refCampo);
 
-$lstCargados 	= $serviciosFunciones->camposTablaView($cabeceras,$serviciosReferencias->traerClientes(),7);
+$lstCargados 	= $serviciosFunciones->camposTablaView($cabeceras,$serviciosReferencias->traerMarca(),2);
 
 
 
@@ -209,6 +204,9 @@ if ($_SESSION['refroll_predio'] != 1) {
 
 <script type="text/javascript">
 $(document).ready(function(){
+	
+	$('#activo').prop('checked',true);
+	
 	$('#example').dataTable({
 		"order": [[ 0, "asc" ]],
 		"language": {

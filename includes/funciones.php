@@ -41,6 +41,9 @@ class Servicios {
 	function camposTablaView($cabeceras,$datos,$cantidad) {
 		$cadView = '';
 		$cadRows = '';
+		$classTask = '';
+		$classVer = '';
+		$classEditar = '';
 		switch ($cantidad) {
 			case 99:
 				$cantidad = 8;
@@ -59,6 +62,14 @@ class Servicios {
 				$classMod = 'varmodificarprincipal';
 				$classEli = 'varborrarprincipal';
 				$idresultados = "resultadosprincipal";
+				break;
+			case 96:
+				$cantidad = 7;
+				$classMod = 'varmodificar';
+				$classVer = 'varver';
+				$lblVer	  = 'Responsables';
+				$classEli = 'varborrar';
+				$idresultados = "resultados";
 				break;
 			default:
 				$classMod = 'varmodificar';
@@ -106,9 +117,27 @@ class Servicios {
 										   
 											<li>
 											<a href="javascript:void(0)" class="'.$classMod.'" id="'.$row[0].'">Modificar</a>
-											</li>
+											</li>';
 										
-											<li>
+				if ($classVer != '') {
+					$cadRows = $cadRows.'		<li>
+											<a href="javascript:void(0)" class="'.$classVer.'" id="'.$row[0].'" data-toggle="modal" data-target="#myModal">'.$lblVer.'</a>
+											</li>';	
+				}
+				
+				if ($classTask != '') {
+					$cadRows = $cadRows.'		<li>
+											<a href="javascript:void(0)" class="'.$classTask.'" id="'.$row[0].'" data-toggle="modal" data-target="#myModal2">'.$lblTask.'</a>
+											</li>';	
+				}
+				
+				if ($classEditar != '') {
+					$cadRows = $cadRows.'		<li>
+											<a href="javascript:void(0)" class="'.$classEditar.'" id="'.$row[0].'" >'.$lblEditar.'</a>
+											</li>';	
+				}
+										
+				$cadRows = $cadRows.'		<li>
 											<a href="javascript:void(0)" class="'.$classEli.'" id="'.$row[0].'">Borrar</a>
 											</li>
 											
@@ -118,12 +147,13 @@ class Servicios {
 							</tr>
 				';
 			} else {
+				
 				$cadRows = $cadRows.'
 								'.$cadsubRows.'
 								<td>
 									
 									<div class="btn-group">
-										<button class="btn btn-success" type="button">Acciones</button>
+										<button class="btn btn-success" type="button">Action</button>
 										
 										<button class="btn btn-success dropdown-toggle" data-toggle="dropdown" type="button">
 										<span class="caret"></span>
@@ -133,7 +163,7 @@ class Servicios {
 										<ul class="dropdown-menu" role="menu">
 										
 											<li>
-											<a href="javascript:void(0)" class="'.$classEli.'" id="'.$row[0].'">Borrar</a>
+											<a href="javascript:void(0)" class="'.$classEli.'" id="'.$row[0].'">Delete</a>
 											</li>
 											
 										</ul>
@@ -172,7 +202,7 @@ class Servicios {
 	function camposTabla($accion,$tabla,$lblcambio,$lblreemplazo,$refdescripcion,$refCampo) {
 		$sql	=	"show columns from ".$tabla;
 		$res 	=	$this->query($sql,0);
-		
+		$label  = '';
 		$ocultar = array("fechacrea","fechamodi","usuacrea","usuamodi");
 		
 		$camposEscondido = "";
@@ -195,7 +225,7 @@ class Servicios {
 			$form	=	'';
 			
 			while ($row = mysql_fetch_array($res)) {
-				
+				$label = $row[0];
 				$i = 0;
 				foreach ($lblcambio as $cambio) {
 					if ($row[0] == $cambio) {
@@ -482,7 +512,7 @@ class Servicios {
 			$form	=	'';
 			
 			while ($row = mysql_fetch_array($res)) {
-				
+				$label = $row[0];
 				$i = 0;
 				foreach ($lblcambio as $cambio) {
 					if ($row[0] == $cambio) {

@@ -22,61 +22,48 @@ $serviciosReferencias 	= new ServiciosReferencias();
 $fecha = date('Y-m-d');
 
 //$resProductos = $serviciosProductos->traerProductosLimite(6);
-$resMenu = $serviciosHTML->menu(utf8_encode($_SESSION['nombre_predio']),"Ordenes",$_SESSION['refroll_predio'],'');
+$resMenu = $serviciosHTML->menu(utf8_encode($_SESSION['nombre_predio']),"Empleados",$_SESSION['refroll_predio'],'');
 
 
 /////////////////////// Opciones pagina ///////////////////////////////////////////////
-$singular = "Orden";
+$singular = "Empleado";
 
-$plural = "Ordenes";
+$plural = "Empleados";
 
-$eliminar = "eliminarOrdenes";
+$eliminar = "eliminarEmpleados";
 
-$insertar = "insertarOrdenes";
+$insertar = "insertarEmpleados";
 
 $tituloWeb = "Gestión: Talleres";
 //////////////////////// Fin opciones ////////////////////////////////////////////////
 
 
 /////////////////////// Opciones para la creacion del formulario  /////////////////////
-$tabla 			= "dbordenes";
+$tabla 			= "dbempleados";
 
-$lblCambio	 	= array("refclientevehiculos","fechacrea","usuacrea","detallereparacion","refestados");
-$lblreemplazo	= array("Cliente - Vehiculo", "Fecha Crea", "Usuario Crea","Detalle Reparación","Estado");
-
-
-$resEstado 	= $serviciosReferencias->traerEstados();
-$cadRef 	= $serviciosFunciones->devolverSelectBoxActivo($resEstado,array(1),'',5);
-
-$resVehiculos 	= $serviciosReferencias->traerClientevehiculos();
-$cadRef2 	= $serviciosFunciones->devolverSelectBox($resVehiculos,array(1,2),' - ');
-
-$nroOrden	= $serviciosReferencias->generarNroOrden();
-
-$resEmp 	= $serviciosReferencias->traerEmpleados();
-
-$cadRefR = '<ul class="list-inline">';
-while ($rowFS = mysql_fetch_array($resEmp)) {
-	$cadRefR = $cadRefR."<li>".'<input id="user'.$rowFS[0].'" class="form-control" type="checkbox" required="" style="width:50px;" name="user'.$rowFS[0].'"><p>'.utf8_encode($rowFS[1]).'</p>'."</li>";
-}
-$cadRefR = $cadRefR."</ul>";
+$lblCambio	 	= array("nrodocumento","fechanacimiento","telefono","direccion","telefonofijo");
+$lblreemplazo	= array("Nro Documento","Fecha Nacimiento","Teléfono","dirección","Teléfono Fijo");
 
 
-$refdescripcion = array(0 => $cadRef,1 => $cadRef2);
-$refCampo 	=  array("refestados","refclientevehiculos");
+$cadRef 	= '';
+
+$refdescripcion = array();
+$refCampo 	=  array();
 //////////////////////////////////////////////  FIN de los opciones //////////////////////////
 
 
 
 
-/////////////////////// Opciones para la creacion del view  patente,refmodelo,reftipovehiculo,anio/////////////////////
-$cabeceras 		= "	<th>Nro</th>
-					<th>Dueño</th>
-					<th>Vehiculo</th>
-					<th>Año</th>
-					<th>Fecha</th>
-					<th>Reparación</th>
-					<th>Estado</th>";
+/////////////////////// Opciones para la creacion del view  apellido,nombre,nrodocumento,fechanacimiento,direccion,telefono,email/////////////////////
+$cabeceras 		= "	<th>Apellido</th>
+					<th>Nombre</th>
+					<th>Nro Documento</th>
+					<th>Fecha Nacimiento</th>
+					<th>CUIL</th>
+					<th>Teléfono</th>
+					<th>Teléfono Fijo</th>
+					<th>Dirección</th>
+					<th>Email</th>";
 
 //////////////////////////////////////////////  FIN de los opciones //////////////////////////
 
@@ -85,7 +72,7 @@ $cabeceras 		= "	<th>Nro</th>
 
 $formulario 	= $serviciosFunciones->camposTabla($insertar ,$tabla,$lblCambio,$lblreemplazo,$refdescripcion,$refCampo);
 
-$lstCargados 	= $serviciosFunciones->camposTablaView($cabeceras,$serviciosReferencias->traerOrdenes(),96);
+$lstCargados 	= $serviciosFunciones->camposTablaView($cabeceras,$serviciosReferencias->traerEmpleados(),9);
 
 
 
@@ -128,7 +115,7 @@ if ($_SESSION['refroll_predio'] != 1) {
 	<link href='http://fonts.googleapis.com/css?family=Lato&subset=latin,latin-ext' rel='stylesheet' type='text/css'>
     <!-- Latest compiled and minified JavaScript -->
     <script src="../../bootstrap/js/bootstrap.min.js"></script>
-	<link rel="stylesheet" href="../../css/chosen.css">
+	<link rel="stylesheet" href="../../css/bootstrap-datetimepicker.min.css">
 	<style type="text/css">
 		
   
@@ -165,15 +152,6 @@ if ($_SESSION['refroll_predio'] != 1) {
         	<form class="form-inline formulario" role="form">
         	<div class="row">
 			<?php echo $formulario; ?>
-            </div>
-			
-            <div class="row">
-            	<div class="form-group col-md-12">
-                	<label class="control-label" style="text-align:left" for="fechas">Seleccione los Responsables</label>
-                    <div class="input-group col-md-12">
-                    	<?php echo $cadRefR; ?>
-                    </div>
-                </div>
             </div>
             
             <div class='row' style="margin-left:25px; margin-right:25px;">
@@ -217,25 +195,6 @@ if ($_SESSION['refroll_predio'] != 1) {
 
 
 </div>
-
-<!-- Modal -->
-<div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
-  <div class="modal-dialog" role="document">
-    <div class="modal-content">
-      <div class="modal-header">
-        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-        <h4 class="modal-title" id="myModalLabel">Responsables</h4>
-      </div>
-      <div class="modal-body userasignates">
-        
-      </div>
-      <div class="modal-footer">
-        <button type="button" class="btn btn-default" data-dismiss="modal">Cerrar</button>
-      </div>
-    </div>
-  </div>
-</div>
-
 <div id="dialog2" title="Eliminar <?php echo $singular; ?>">
     	<p>
         	<span class="ui-icon ui-icon-alert" style="float: left; margin: 0 7px 20px 0;"></span>
@@ -247,16 +206,11 @@ if ($_SESSION['refroll_predio'] != 1) {
 <script type="text/javascript" src="../../js/jquery.dataTables.min.js"></script>
 <script src="../../bootstrap/js/dataTables.bootstrap.js"></script>
 
+<script src="../../js/bootstrap-datetimepicker.min.js"></script>
+<script src="../../js/bootstrap-datetimepicker.es.js"></script>
+
 <script type="text/javascript">
 $(document).ready(function(){
-	
-	$('#usuacrea').attr('value','<?php echo utf8_encode($_SESSION['nombre_predio']); ?>');
-	$('#usuamodi').attr('value','<?php echo utf8_encode($_SESSION['nombre_predio']); ?>');
-	
-	$('#numero').attr('value','<?php echo $nroOrden; ?>');
-	$('#numero').attr('readonly', true);
-	
-	
 	$('#example').dataTable({
 		"order": [[ 0, "asc" ]],
 		"language": {
@@ -284,31 +238,7 @@ $(document).ready(function(){
 		  }
 	} );
 	
-	
-	$("#example").on("click",'.varver', function(){
-		  usersid =  $(this).attr("id");
-		  if (!isNaN(usersid)) {
 
-			$.ajax({
-					data:  {id: usersid, accion: 'traerResponsablesPorOrden'},
-					url:   '../../ajax/ajax.php',
-					type:  'post',
-					beforeSend: function () {
-							
-					},
-					success:  function (response) {
-							$('.userasignates').html(response);
-							
-					}
-			});
-			
-			//url = "../clienteseleccionado/index.php?idcliente=" + usersid;
-			//$(location).attr('href',url);
-		  } else {
-			alert("Error redo action.");	
-		  }
-	});//fin del boton eliminar
-	
 	$("#example").on("click",'.varborrar', function(){
 		  usersid =  $(this).attr("id");
 		  if (!isNaN(usersid)) {
@@ -440,19 +370,20 @@ $(document).ready(function(){
 
 });
 </script>
-<script src="../../js/chosen.jquery.js" type="text/javascript"></script>
+
 <script type="text/javascript">
-    var config = {
-      '.chosen-select'           : {},
-      '.chosen-select-deselect'  : {allow_single_deselect:true},
-      '.chosen-select-no-single' : {disable_search_threshold:10},
-      '.chosen-select-no-results': {no_results_text:'Oops, nothing found!'},
-      '.chosen-select-width'     : {width:"95%"}
-    }
-    for (var selector in config) {
-      $(selector).chosen(config[selector]);
-    }
-  </script>
+$('.form_date').datetimepicker({
+	language:  'es',
+	weekStart: 1,
+	todayBtn:  1,
+	autoclose: 1,
+	todayHighlight: 1,
+	startView: 2,
+	minView: 2,
+	forceParse: 0,
+	format: 'dd/mm/yyyy'
+});
+</script>
 <?php } ?>
 </body>
 </html>

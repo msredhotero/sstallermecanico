@@ -22,34 +22,34 @@ $serviciosReferencias 	= new ServiciosReferencias();
 $fecha = date('Y-m-d');
 
 //$resProductos = $serviciosProductos->traerProductosLimite(6);
-$resMenu = $serviciosHTML->menu(utf8_encode($_SESSION['nombre_predio']),"Clientes",$_SESSION['refroll_predio'],'');
+$resMenu = $serviciosHTML->menu(utf8_encode($_SESSION['nombre_predio']),"Marcas",$_SESSION['refroll_predio'],'');
 
 
 $id = $_GET['id'];
 
-$resResultado = $serviciosReferencias->traerClientesPorId($id);
+$resResultado = $serviciosReferencias->traerMarcaPorId($id);
 
 
 /////////////////////// Opciones pagina ///////////////////////////////////////////////
-$singular = "Cliente";
+$singular = "Marca";
 
-$plural = "Clientes";
+$plural = "Marcas";
 
-$eliminar = "eliminarClientes";
+$eliminar = "eliminarMarca";
 
-$modificar = "modificarClientes";
+$modificar = "modificarMarca";
 
-$idTabla = "idcliente";
+$idTabla = "idmarca";
 
 $tituloWeb = "Gestión: Talleres";
 //////////////////////// Fin opciones ////////////////////////////////////////////////
 
 
 /////////////////////// Opciones para la creacion del formulario  /////////////////////
-$tabla 			= "dbclientes";
+$tabla 			= "tbmarca";
 
-$lblCambio	 	= array("nrodocumento","fechanaciomiento","telefono");
-$lblreemplazo	= array("Nro Documento","Fecha Nacimiento","Teléfono");
+$lblCambio	 	= array();
+$lblreemplazo	= array();
 
 
 $cadRef 	= '';
