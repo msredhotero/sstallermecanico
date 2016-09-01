@@ -149,18 +149,18 @@ return $res;
 
 /* PARA Ordenes */
 
-function insertarOrdenes($numero,$refclientevehiculos,$fechacrea,$fechamodi,$usuacrea,$usuamodi,$detallereparacion,$refestados,$precio) {
-$sql = "insert into dbordenes(idorden,numero,refclientevehiculos,fechacrea,fechamodi,usuacrea,usuamodi,detallereparacion,refestados,precio)
-values ('','".utf8_decode($numero)."',".$refclientevehiculos.",'".utf8_decode($fechacrea)."','".utf8_decode($fechamodi)."','".utf8_decode($usuacrea)."','".utf8_decode($usuamodi)."','".utf8_decode($detallereparacion)."',".$refestados.",".$precio.")";
+function insertarOrdenes($numero,$refclientevehiculos,$fechacrea,$fechamodi,$usuacrea,$usuamodi,$detallereparacion,$refestados,$precio,$anticipo) {
+$sql = "insert into dbordenes(idorden,numero,refclientevehiculos,fechacrea,fechamodi,usuacrea,usuamodi,detallereparacion,refestados,precio,anticipo)
+values ('','".utf8_decode($numero)."',".$refclientevehiculos.",'".date('Y-m-d')."','".($fechamodi)."','".utf8_decode($usuacrea)."','".utf8_decode($usuamodi)."','".utf8_decode($detallereparacion)."',".$refestados.",".$precio.",".$anticipo.")";
 $res = $this->query($sql,1);
 return $res;
 }
 
 
-function modificarOrdenes($id,$numero,$refclientevehiculos,$fechacrea,$fechamodi,$usuacrea,$usuamodi,$detallereparacion,$refestados,$precio) {
+function modificarOrdenes($id,$numero,$refclientevehiculos,$fechacrea,$fechamodi,$usuacrea,$usuamodi,$detallereparacion,$refestados,$precio,$anticipo) {
 $sql = "update dbordenes
 set
-numero = '".utf8_decode($numero)."',refclientevehiculos = ".$refclientevehiculos.",fechacrea = '".utf8_decode($fechacrea)."',fechamodi = '".utf8_decode($fechamodi)."',usuacrea = '".utf8_decode($usuacrea)."',usuamodi = '".utf8_decode($usuamodi)."',detallereparacion = '".utf8_decode($detallereparacion)."',refestados = ".$refestados.",precio = ".$precio."
+numero = '".utf8_decode($numero)."',refclientevehiculos = ".$refclientevehiculos.",fechacrea = '".($fechacrea)."',fechamodi = '".($fechamodi)."',usuacrea = '".utf8_decode($usuacrea)."',usuamodi = '".utf8_decode($usuamodi)."',detallereparacion = '".utf8_decode($detallereparacion)."',refestados = ".$refestados.",precio = ".$precio.",anticipo = ".$anticipo."
 where idorden =".$id;
 $res = $this->query($sql,0);
 return $res;
@@ -168,9 +168,15 @@ return $res;
 
 
 function eliminarOrdenes($id) {
-$sql = "delete from dbordenes where idorden =".$id;
-$res = $this->query($sql,0);
-return $res;
+	// elimino los responsables
+	$this->eliminarOrdenesresponsablesPorOrden($id);
+	//elimino los pagos	
+	$this->eliminarPagosPorOrden($id);
+	
+	//elimino la orden	
+	$sql = "delete from dbordenes where idorden =".$id;
+	$res = $this->query($sql,0);
+	return $res;
 }
 
 function zerofill($valor, $longitud){
@@ -188,6 +194,12 @@ function generarNroOrden() {
 	return "ORD000001";
 }
 
+function finalizarOrden($idOrden,$usuario) {
+	$sql = "update dbordenes set refestados = 1,fechamodi = '".date('Y-m-d')."',usuamodi = '".utf8_decode($usuario)."' where idorden =".$idOrden;
+	$res = $this->query($sql,0);	
+	return $res;
+}
+
 function traerOrdenes() {
 $sql = "select
 o.idorden,
@@ -197,13 +209,14 @@ concat(ma.marca,' ',mo.modelo,' - ',ve.patente) as vehiculo,
 ve.anio,
 DATE_FORMAT(o.fechacrea,'%Y-%m-%d'),
 o.detallereparacion,
+o.precio,
+o.anticipo,
 est.estado,
 o.fechamodi,
 o.usuacrea,
 o.usuamodi,
 o.refclientevehiculos,
-o.refestados,
-o.precio
+o.refestados
 from dbordenes o
 inner join dbclientevehiculos cli ON cli.idclientevehiculo = o.refclientevehiculos
 inner join dbclientes cl ON cl.idcliente = cli.refclientes
@@ -211,6 +224,69 @@ inner join dbvehiculos ve ON ve.idvehiculo = cli.refvehiculos
 inner join tbmodelo mo ON mo.idmodelo = ve.refmodelo
 inner join tbmarca ma ON ma.idmarca = mo.refmarca
 inner join tbestados est ON est.idestado = o.refestados
+order by 1";
+$res = $this->query($sql,0);
+return $res;
+}
+
+
+function traerOrdenesActivos() {
+$sql = "select
+o.idorden,
+o.numero,
+concat(cl.apellido,' ',cl.nombre,', Dni:',cast(cl.nrodocumento as char)) as cliente,
+concat(ma.marca,' ',mo.modelo,' - ',ve.patente) as vehiculo,
+DATE_FORMAT(o.fechacrea,'%Y-%m-%d') as fecha,
+o.detallereparacion,
+o.precio,
+(o.precio - coalesce(pp.monto,0)) as saldo,
+est.estado,
+o.fechamodi,
+o.usuacrea,
+o.usuamodi,
+o.refclientevehiculos,
+o.refestados
+from dbordenes o
+inner join dbclientevehiculos cli ON cli.idclientevehiculo = o.refclientevehiculos
+inner join dbclientes cl ON cl.idcliente = cli.refclientes
+inner join dbvehiculos ve ON ve.idvehiculo = cli.refvehiculos
+inner join tbmodelo mo ON mo.idmodelo = ve.refmodelo
+inner join tbmarca ma ON ma.idmarca = mo.refmarca
+inner join tbestados est ON est.idestado = o.refestados
+left join (select sum(pago) as monto,refordenes from dbpagos) pp ON pp.refordenes = o.idorden
+where	est.estado != 'Finalizado'
+order by 1";
+$res = $this->query($sql,0);
+return $res;
+}
+
+
+
+function traerOrdenesMora() {
+$sql = "select
+o.idorden,
+o.numero,
+concat(cl.apellido,' ',cl.nombre,', Dni:',cast(cl.nrodocumento as char)) as cliente,
+concat(ma.marca,' ',mo.modelo,' - ',ve.patente) as vehiculo,
+DATE_FORMAT(o.fechacrea,'%Y-%m-%d') as fecha,
+o.detallereparacion,
+o.precio,
+(o.precio - coalesce(pp.monto,0)) as saldo,
+est.estado,
+o.fechamodi,
+o.usuacrea,
+o.usuamodi,
+o.refclientevehiculos,
+o.refestados
+from dbordenes o
+inner join dbclientevehiculos cli ON cli.idclientevehiculo = o.refclientevehiculos
+inner join dbclientes cl ON cl.idcliente = cli.refclientes
+inner join dbvehiculos ve ON ve.idvehiculo = cli.refvehiculos
+inner join tbmodelo mo ON mo.idmodelo = ve.refmodelo
+inner join tbmarca ma ON ma.idmarca = mo.refmarca
+inner join tbestados est ON est.idestado = o.refestados
+left join (select sum(pago) as monto,refordenes from dbpagos) pp ON pp.refordenes = o.idorden
+where	est.estado = 'Finalizado' and coalesce(pp.monto,0) < o.precio
 order by 1";
 $res = $this->query($sql,0);
 return $res;
@@ -794,6 +870,101 @@ return $res;
 
 /* Fin */
 /* /* Fin de la Tabla: dbordenesresponsables*/
+
+
+/* PARA Pagos */
+
+function insertarPagos($refordenes,$pago,$fechapago) { 
+$sql = "insert into dbpagos(idpago,refordenes,pago,fechapago) 
+values ('',".$refordenes.",".$pago.",'".utf8_decode($fechapago)."')"; 
+$res = $this->query($sql,1); 
+return $res; 
+} 
+
+
+function modificarPagos($id,$refordenes,$pago,$fechapago) { 
+$sql = "update dbpagos 
+set 
+refordenes = ".$refordenes.",pago = ".$pago.",fechapago = '".utf8_decode($fechapago)."' 
+where idpago =".$id; 
+$res = $this->query($sql,0); 
+return $res; 
+} 
+
+
+function eliminarPagos($id) { 
+$sql = "delete from dbpagos where idpago =".$id; 
+$res = $this->query($sql,0); 
+return $res; 
+}
+
+
+function eliminarPagosPorOrden($orden) { 
+$sql = "delete from dbpagos where refordenes =".$orden; 
+$res = $this->query($sql,0); 
+return $res; 
+} 
+
+
+function traerPagos() { 
+$sql = "select 
+p.idpago,
+concat(cl.apellido,' ',cl.nombre,', Dni:',cast(cl.nrodocumento as char)) as cliente,
+concat(ma.marca,' ',mo.modelo,' - ',ve.patente) as vehiculo,
+ord.numero,
+p.pago,
+p.fechapago,
+es.estado,
+p.refordenes
+from dbpagos p 
+inner join dbordenes ord ON ord.idorden = p.refordenes 
+inner join dbclientevehiculos cli ON cli.idclientevehiculo = ord.refclientevehiculos 
+inner join tbestados es ON es.idestado = ord.refestados 
+inner join dbclientes cl ON cl.idcliente = cli.refclientes
+inner join dbvehiculos ve ON ve.idvehiculo = cli.refvehiculos
+inner join tbmodelo mo ON mo.idmodelo = ve.refmodelo
+inner join tbmarca ma ON ma.idmarca = mo.refmarca
+order by 1"; 
+$res = $this->query($sql,0); 
+return $res; 
+} 
+
+
+
+function traerPagosPorOrden($idOrden) {
+$sql = "select 
+p.idpago,
+concat(cl.apellido,' ',cl.nombre,', Dni:',cast(cl.nrodocumento as char)) as cliente,
+concat(ma.marca,' ',mo.modelo,' - ',ve.patente) as vehiculo,
+ord.numero,
+p.pago,
+p.fechapago,
+es.estado,
+p.refordenes
+from dbpagos p 
+inner join dbordenes ord ON ord.idorden = p.refordenes 
+inner join dbclientevehiculos cli ON cli.idclientevehiculo = ord.refclientevehiculos 
+inner join tbestados es ON es.idestado = ord.refestados 
+inner join dbclientes cl ON cl.idcliente = cli.refclientes
+inner join dbvehiculos ve ON ve.idvehiculo = cli.refvehiculos
+inner join tbmodelo mo ON mo.idmodelo = ve.refmodelo
+inner join tbmarca ma ON ma.idmarca = mo.refmarca
+where	ord.idorden = ".$idOrden."
+order by 1"; 
+$res = $this->query($sql,0); 
+return $res;
+
+}
+
+
+function traerPagosPorId($id) { 
+$sql = "select idpago,refordenes,pago,fechapago from dbpagos where idpago =".$id; 
+$res = $this->query($sql,0); 
+return $res; 
+} 
+
+/* Fin */
+/* /* Fin de la Tabla: dbpagos*/
 
 
 

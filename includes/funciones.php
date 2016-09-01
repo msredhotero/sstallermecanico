@@ -44,6 +44,9 @@ class Servicios {
 		$classTask = '';
 		$classVer = '';
 		$classEditar = '';
+		$classFinalizar = '';
+		$classPagar = '';
+		$lblTask = '';
 		switch ($cantidad) {
 			case 99:
 				$cantidad = 8;
@@ -64,12 +67,31 @@ class Servicios {
 				$idresultados = "resultadosprincipal";
 				break;
 			case 96:
-				$cantidad = 7;
+				$cantidad = 9;
 				$classMod = 'varmodificar';
 				$classVer = 'varver';
 				$lblVer	  = 'Responsables';
 				$classEli = 'varborrar';
 				$idresultados = "resultados";
+				break;
+			case 95:
+				$cantidad = 8;
+				$classMod = 'varmodificar';
+				$classTask	  = 'varpagos';
+				$classFinalizar = 'varfinalizar';
+				$classEli = 'varborrar';
+				$classPagar = 'varpagar';
+				$idresultados = "resultados";
+				$lblTask = 'Pagos';
+				break;
+			case 94:
+				$cantidad = 8;
+				$classMod = 'varmodificar';
+				$classTask	  = 'varpagos';
+				$classEli = 'varborrar';
+				$classPagar = 'varpagar';
+				$idresultados = "resultados";
+				$lblTask = 'Pagos';
 				break;
 			default:
 				$classMod = 'varmodificar';
@@ -116,18 +138,29 @@ class Servicios {
 										<ul class="dropdown-menu" role="menu">
 										   
 											<li>
-											<a href="javascript:void(0)" class="'.$classMod.'" id="'.$row[0].'">Modificar</a>
+											<a href="javascript:void(0)" class="'.$classMod.'" id="'.$row[0].'"><span class="glyphicon glyphicon-pencil"></span> Modificar</a>
 											</li>';
-										
+				if ($classFinalizar != '') {
+					$cadRows = $cadRows.'		<li>
+											<a href="javascript:void(0)" class="'.$classFinalizar.'" id="'.$row[0].'" data-toggle="modal" data-target="#myModal"><span class="glyphicon glyphicon-ok"></span> Finalizar</a>
+											</li>';	
+				}						
+				
 				if ($classVer != '') {
 					$cadRows = $cadRows.'		<li>
-											<a href="javascript:void(0)" class="'.$classVer.'" id="'.$row[0].'" data-toggle="modal" data-target="#myModal">'.$lblVer.'</a>
+											<a href="javascript:void(0)" class="'.$classVer.'" id="'.$row[0].'" data-toggle="modal" data-target="#myModal"><span class="glyphicon glyphicon-search"></span> '.$lblVer.'</a>
 											</li>';	
 				}
 				
 				if ($classTask != '') {
 					$cadRows = $cadRows.'		<li>
-											<a href="javascript:void(0)" class="'.$classTask.'" id="'.$row[0].'" data-toggle="modal" data-target="#myModal2">'.$lblTask.'</a>
+											<a href="javascript:void(0)" class="'.$classTask.'" id="'.$row[0].'" data-toggle="modal" data-target="#myModal2"><span class="glyphicon glyphicon-usd"></span> '.$lblTask.'</a>
+											</li>';	
+				}
+				
+				if ($classPagar != '') {
+					$cadRows = $cadRows.'		<li>
+											<a href="javascript:void(0)" class="'.$classPagar.'" id="'.$row[0].'"><span class="glyphicon glyphicon-shopping-cart"></span> Pagar</a>
 											</li>';	
 				}
 				
@@ -138,7 +171,7 @@ class Servicios {
 				}
 										
 				$cadRows = $cadRows.'		<li>
-											<a href="javascript:void(0)" class="'.$classEli.'" id="'.$row[0].'">Borrar</a>
+											<a href="javascript:void(0)" class="'.$classEli.'" id="'.$row[0].'"><span class="glyphicon glyphicon-remove"></span> Borrar</a>
 											</li>
 											
 										</ul>
@@ -277,7 +310,7 @@ class Servicios {
 								$i = $i + 1;
 							}*/
 							
-							$autocompletar = array("refclientevehiculos");
+							$autocompletar = array("refclientevehiculos","refordenes");
 							
 							if (in_array($campo,$autocompletar)) {
 								$form	=	$form.'
@@ -286,7 +319,7 @@ class Servicios {
 									<label for="'.$campo.'" class="control-label" style="text-align:left">'.$label.'</label>
 									<div class="input-group col-md-12">
 										
-										<select data-placeholder="selecione el cliente..." id="'.strtolower($campo).'" name="'.strtolower($campo).'" class="chosen-select" style="width:450px;" tabindex="2">
+										<select data-placeholder="selecione el '.$label.'..." id="'.strtolower($campo).'" name="'.strtolower($campo).'" class="chosen-select" tabindex="2">
             								<option value=""></option>
 											';
 								
@@ -340,18 +373,32 @@ class Servicios {
 									$label = ucwords($label);
 									$campo = strtolower($row[0]);
 									
-									$form	=	$form.'
-									
-									<div class="form-group col-md-6" style="display:'.$lblOculta.'">
-										<label for="'.$campo.'" class="control-label" style="text-align:left">'.$label.'</label>
-										<div class="input-group date form_date col-md-6" data-date="" data-date-format="dd MM yyyy" data-link-field="'.$campo.'" data-link-format="yyyy-mm-dd">
-											<input class="form-control" size="50" type="text" value="" readonly>
-											<span class="input-group-addon"><span class="glyphicon glyphicon-calendar"></span></span>
+									if ($row[0] == "fechapago") {
+										$form	=	$form.'
+														
+										<div class="form-group col-md-6">
+											<label for="'.$campo.'" class="control-label" style="text-align:left">'.$label.'</label>
+											<div class="input-group col-md-6">
+												<input class="form-control" type="text" value="" name="'.$campo.'" id="'.$campo.'"/>
+											</div>
+											
 										</div>
-										<input type="hidden" name="'.$campo.'" id="'.$campo.'" value="" />
-									</div>
-									
-									';
+										
+										';
+									} else {
+										$form	=	$form.'
+										
+										<div class="form-group col-md-6" style="display:'.$lblOculta.'">
+											<label for="'.$campo.'" class="control-label" style="text-align:left">'.$label.'</label>
+											<div class="input-group date form_date col-md-6" data-date="" data-date-format="dd MM yyyy" data-link-field="'.$campo.'" data-link-format="yyyy-mm-dd">
+												<input class="form-control" size="50" type="text" value="" readonly>
+												<span class="input-group-addon"><span class="glyphicon glyphicon-calendar"></span></span>
+											</div>
+											<input type="hidden" name="'.$campo.'" id="'.$campo.'" value="" />
+										</div>
+										
+										';
+									}
 									
 									/*
 									$form	=	$form.'

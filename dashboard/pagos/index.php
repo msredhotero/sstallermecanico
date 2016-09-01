@@ -22,62 +22,45 @@ $serviciosReferencias 	= new ServiciosReferencias();
 $fecha = date('Y-m-d');
 
 //$resProductos = $serviciosProductos->traerProductosLimite(6);
-$resMenu = $serviciosHTML->menu(utf8_encode($_SESSION['nombre_predio']),"Ordenes",$_SESSION['refroll_predio'],'');
+$resMenu = $serviciosHTML->menu(utf8_encode($_SESSION['nombre_predio']),"Pagos",$_SESSION['refroll_predio'],'');
 
 
 /////////////////////// Opciones pagina ///////////////////////////////////////////////
-$singular = "Orden";
+$singular = "Pago";
 
-$plural = "Ordenes";
+$plural = "Pagos";
 
-$eliminar = "eliminarOrdenes";
+$eliminar = "eliminarPagos";
 
-$insertar = "insertarOrdenes";
+$insertar = "insertarPagos";
 
 $tituloWeb = "Gestión: Talleres";
 //////////////////////// Fin opciones ////////////////////////////////////////////////
 
 
 /////////////////////// Opciones para la creacion del formulario  /////////////////////
-$tabla 			= "dbordenes";
+$tabla 			= "dbpagos";
 
-$lblCambio	 	= array("refclientevehiculos","fechacrea","usuacrea","detallereparacion","refestados","precio");
-$lblreemplazo	= array("Cliente - Vehiculo", "Fecha Crea", "Usuario Crea","Detalle Reparación","Estado","Presupuesto Aproximado");
-
-
-$resEstado 	= $serviciosReferencias->traerEstados();
-$cadRef 	= $serviciosFunciones->devolverSelectBoxActivo($resEstado,array(1),'',5);
-
-$resVehiculos 	= $serviciosReferencias->traerClientevehiculos();
-$cadRef2 	= $serviciosFunciones->devolverSelectBox($resVehiculos,array(1,2),' - ');
-
-$nroOrden	= $serviciosReferencias->generarNroOrden();
-
-$resEmp 	= $serviciosReferencias->traerEmpleados();
-
-$cadRefR = '<ul class="list-inline">';
-while ($rowFS = mysql_fetch_array($resEmp)) {
-	$cadRefR = $cadRefR."<li>".'<input id="user'.$rowFS[0].'" class="form-control" type="checkbox" required="" style="width:50px;" name="user'.$rowFS[0].'"><p>'.utf8_encode($rowFS[1]).'</p>'."</li>";
-}
-$cadRefR = $cadRefR."</ul>";
+$lblCambio	 	= array("refordenes","fechapago");
+$lblreemplazo	= array("Orden","Fecha Pago");
 
 
-$refdescripcion = array(0 => $cadRef,1 => $cadRef2);
-$refCampo 	=  array("refestados","refclientevehiculos");
+$resOrden 	= $serviciosReferencias->traerOrdenes();
+$cadRef 	= $serviciosFunciones->devolverSelectBox($resOrden,array(1,2,3),' - ');
+
+$refdescripcion = array(0 => $cadRef);
+$refCampo 	=  array("refordenes");
 //////////////////////////////////////////////  FIN de los opciones //////////////////////////
 
 
 
 
 /////////////////////// Opciones para la creacion del view  patente,refmodelo,reftipovehiculo,anio/////////////////////
-$cabeceras 		= "	<th>Nro</th>
-					<th>Dueño</th>
+$cabeceras 		= "	<th>Cliente</th>
 					<th>Vehiculo</th>
-					<th>Año</th>
+					<th>Orden</th>
+					<th>Pago</th>
 					<th>Fecha</th>
-					<th>Reparación</th>
-					<th>Presup. Aprox.</th>
-					<th>Anticipo</th>
 					<th>Estado</th>";
 
 //////////////////////////////////////////////  FIN de los opciones //////////////////////////
@@ -87,7 +70,7 @@ $cabeceras 		= "	<th>Nro</th>
 
 $formulario 	= $serviciosFunciones->camposTabla($insertar ,$tabla,$lblCambio,$lblreemplazo,$refdescripcion,$refCampo);
 
-$lstCargados 	= $serviciosFunciones->camposTablaView($cabeceras,$serviciosReferencias->traerOrdenes(),96);
+$lstCargados 	= $serviciosFunciones->camposTablaView($cabeceras,$serviciosReferencias->traerPagos(),6);
 
 
 
@@ -127,10 +110,11 @@ if ($_SESSION['refroll_predio'] != 1) {
     
 	<!-- Latest compiled and minified CSS -->
     <link rel="stylesheet" href="../../bootstrap/css/bootstrap.min.css"/>
+    <link rel="stylesheet" type="text/css" href="../../css/jquery.datetimepicker.css"/>
 	<link href='http://fonts.googleapis.com/css?family=Lato&subset=latin,latin-ext' rel='stylesheet' type='text/css'>
     <!-- Latest compiled and minified JavaScript -->
     <script src="../../bootstrap/js/bootstrap.min.js"></script>
-	<link rel="stylesheet" href="../../css/chosen.css">
+
 	<style type="text/css">
 		
   
@@ -139,6 +123,7 @@ if ($_SESSION['refroll_predio'] != 1) {
     
    
    <link href="../../css/perfect-scrollbar.css" rel="stylesheet">
+   <link rel="stylesheet" href="../../css/chosen.css">
       <!--<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>-->
       <script src="../../js/jquery.mousewheel.js"></script>
       <script src="../../js/perfect-scrollbar.js"></script>
@@ -168,15 +153,7 @@ if ($_SESSION['refroll_predio'] != 1) {
         	<div class="row">
 			<?php echo $formulario; ?>
             </div>
-			
-            <div class="row">
-            	<div class="form-group col-md-12">
-                	<label class="control-label" style="text-align:left" for="fechas">Seleccione los Responsables</label>
-                    <div class="input-group col-md-12">
-                    	<?php echo $cadRefR; ?>
-                    </div>
-                </div>
-            </div>
+
             
             <div class='row' style="margin-left:25px; margin-right:25px;">
                 <div class='alert'>
@@ -219,25 +196,6 @@ if ($_SESSION['refroll_predio'] != 1) {
 
 
 </div>
-
-<!-- Modal -->
-<div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
-  <div class="modal-dialog" role="document">
-    <div class="modal-content">
-      <div class="modal-header">
-        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-        <h4 class="modal-title" id="myModalLabel">Responsables</h4>
-      </div>
-      <div class="modal-body userasignates">
-        
-      </div>
-      <div class="modal-footer">
-        <button type="button" class="btn btn-default" data-dismiss="modal">Cerrar</button>
-      </div>
-    </div>
-  </div>
-</div>
-
 <div id="dialog2" title="Eliminar <?php echo $singular; ?>">
     	<p>
         	<span class="ui-icon ui-icon-alert" style="float: left; margin: 0 7px 20px 0;"></span>
@@ -248,16 +206,12 @@ if ($_SESSION['refroll_predio'] != 1) {
 </div>
 <script type="text/javascript" src="../../js/jquery.dataTables.min.js"></script>
 <script src="../../bootstrap/js/dataTables.bootstrap.js"></script>
+<script src="../../js/jquery.datetimepicker.full.min.js"></script>
 
 <script type="text/javascript">
 $(document).ready(function(){
 	
-	$('#usuacrea').attr('value','<?php echo utf8_encode($_SESSION['nombre_predio']); ?>');
-	$('#usuamodi').attr('value','<?php echo utf8_encode($_SESSION['nombre_predio']); ?>');
-	
-	$('#numero').attr('value','<?php echo $nroOrden; ?>');
-	$('#numero').attr('readonly', true);
-	
+	$('#activo').prop('checked',true);
 	
 	$('#example').dataTable({
 		"order": [[ 0, "asc" ]],
@@ -286,31 +240,7 @@ $(document).ready(function(){
 		  }
 	} );
 	
-	
-	$("#example").on("click",'.varver', function(){
-		  usersid =  $(this).attr("id");
-		  if (!isNaN(usersid)) {
 
-			$.ajax({
-					data:  {id: usersid, accion: 'traerResponsablesPorOrden'},
-					url:   '../../ajax/ajax.php',
-					type:  'post',
-					beforeSend: function () {
-							
-					},
-					success:  function (response) {
-							$('.userasignates').html(response);
-							
-					}
-			});
-			
-			//url = "../clienteseleccionado/index.php?idcliente=" + usersid;
-			//$(location).attr('href',url);
-		  } else {
-			alert("Error redo action.");	
-		  }
-	});//fin del boton eliminar
-	
 	$("#example").on("click",'.varborrar', function(){
 		  usersid =  $(this).attr("id");
 		  if (!isNaN(usersid)) {
@@ -439,6 +369,13 @@ $(document).ready(function(){
 			});
 		}
     });
+	
+	$('#fechapago').datetimepicker({
+	dayOfWeekStart : 1,
+	format: 'Y-m-d H:i'
+	});
+	$.datetimepicker.setLocale('es');
+	$('#fechapago').datetimepicker({step:10});
 
 });
 </script>

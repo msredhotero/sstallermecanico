@@ -42,14 +42,16 @@ $tituloWeb = "Gestión: Talleres";
 $cabeceras 		= "	<th>Nro</th>
 					<th>Dueño</th>
 					<th>Vehiculo</th>
-					<th>Año</th>
 					<th>Fecha</th>
 					<th>Reparación</th>
+					<th>Presup. Aprox.</th>
+					<th>Saldo</th>
 					<th>Estado</th>";
 
 //////////////////////////////////////////////  FIN de los opciones //////////////////////////
 
-$lstCargados 	= $serviciosFunciones->camposTablaView($cabeceras,$serviciosReferencias->traerOrdenes(),7);
+$lstCargados 	= $serviciosFunciones->camposTablaView($cabeceras,$serviciosReferencias->traerOrdenesActivos(),95);
+$lstCargadosMora 	= $serviciosFunciones->camposTablaView($cabeceras,$serviciosReferencias->traerOrdenesMora(),94);
 
 ?>
 
@@ -115,7 +117,34 @@ $lstCargados 	= $serviciosFunciones->camposTablaView($cabeceras,$serviciosRefere
         	
         </div>
     	<div class="cuerpoBox">
+        	<div class='row' style="margin-left:25px; margin-right:25px;">
+                <div class='alert'>
+                
+                </div>
+                <div id='load'>
+                
+                </div>
+            </div>
     		<?php echo $lstCargados; ?>
+    	</div>
+    </div>
+    
+    
+    <div class="boxInfoLargo">
+        <div id="headBoxInfo">
+        	<p style="color: #fff; font-size:18px; height:16px;">Mora</p>
+        	
+        </div>
+    	<div class="cuerpoBox">
+        	<div class='row' style="margin-left:25px; margin-right:25px;">
+                <div class='alert'>
+                
+                </div>
+                <div id='load'>
+                
+                </div>
+            </div>
+    		<?php echo $lstCargadosMora; ?>
     	</div>
     </div>
     
@@ -130,7 +159,23 @@ $lstCargados 	= $serviciosFunciones->camposTablaView($cabeceras,$serviciosRefere
 </div>
 
 
-
+<!-- Modal -->
+<div class="modal fade" id="myModal2" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+        <h4 class="modal-title" id="myModalLabel">Pagos</h4>
+      </div>
+      <div class="modal-body userasignates">
+        
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-default" data-dismiss="modal">Cerrar</button>
+      </div>
+    </div>
+  </div>
+</div>
 
 <div id="dialog2" title="Eliminar <?php echo $singular; ?>">
     	<p>
@@ -200,7 +245,92 @@ $(document).ready(function(){
 			alert("Error, vuelva a realizar la acción.");	
 		  }
 	});//fin del boton modificar
+	
+	
+	$("#example").on("click",'.varpagar', function(){
+		  usersid =  $(this).attr("id");
+		  if (!isNaN(usersid)) {
+			
+			url = "pagos/";
+			$(location).attr('href',url);
+		  } else {
+			alert("Error, vuelva a realizar la acción.");	
+		  }
+	});//fin del boton pagos
+	
+	
+	$("#example").on("click",'.varpagos', function(){
 
+		  usersid =  $(this).attr("id");
+		  if (!isNaN(usersid)) {
+
+			$.ajax({
+					data:  {id: usersid, accion: 'traerPagosPorOrden'},
+					url:   '../ajax/ajax.php',
+					type:  'post',
+					beforeSend: function () {
+							
+					},
+					success:  function (response) {
+							$('.userasignates').html(response);
+							
+					}
+			});
+			
+			//url = "../clienteseleccionado/index.php?idcliente=" + usersid;
+			//$(location).attr('href',url);
+		  } else {
+			alert("Error redo action.");	
+		  }
+	});//fin del boton eliminar
+	
+	
+	$("#example").on("click",'.varfinalizar', function(){
+
+		  usersid =  $(this).attr("id");
+		  if (!isNaN(usersid)) {
+
+			$.ajax({
+					data:  {id: usersid, usuario: '<?php echo $_SESSION['nombre_predio']; ?>', accion: 'finalizarOrden'},
+					url:   '../ajax/ajax.php',
+					type:  'post',
+					beforeSend: function () {
+							
+					},
+					success:  function (response) {
+							if (response == '') {
+								$(".alert").removeClass("alert-danger");
+								$(".alert").removeClass("alert-info");
+								$(".alert").addClass("alert-success");
+								$(".alert").html('<strong>Ok!</strong> Se finalizo exitosamente la <strong>Orden</strong>. ');
+								$(".alert").delay(3000).queue(function(){
+									/*aca lo que quiero hacer 
+									  después de los 2 segundos de retraso*/
+									$(this).dequeue(); //continúo con el siguiente ítem en la cola
+									
+								});
+								$("#load").html('');
+								url = "index.php";
+								$(location).attr('href',url);
+								
+								
+							} else {
+								$(".alert").removeClass("alert-danger");
+								$(".alert").addClass("alert-danger");
+								$(".alert").html('<strong>Error!</strong> '+response);
+								$("#load").html('');
+							}
+							
+					}
+			});
+			
+			//url = "../clienteseleccionado/index.php?idcliente=" + usersid;
+			//$(location).attr('href',url);
+		  } else {
+			alert("Error redo action.");	
+		  }
+	});//fin del boton eliminar
+	
 	 $( "#dialog2" ).dialog({
 		 	
 			    autoOpen: false,
