@@ -111,7 +111,7 @@ $lstCargadosMora 	= $serviciosFunciones->camposTablaView($cabeceras,$serviciosRe
 
 <h3>Bienvenido</h3>
 
-    <div class="boxInfoLargo">
+    <div class="boxInfoLargo tile-stats tile-white stat-tile">
         <div id="headBoxInfo">
         	<p style="color: #fff; font-size:18px; height:16px;">Ordenes Cargadas</p>
         	
@@ -130,7 +130,7 @@ $lstCargadosMora 	= $serviciosFunciones->camposTablaView($cabeceras,$serviciosRe
     </div>
     
     
-    <div class="boxInfoLargo">
+    <div class="boxInfoLargo tile-stats tile-white stat-tile">
         <div id="headBoxInfo">
         	<p style="color: #fff; font-size:18px; height:16px;">Mora</p>
         	
@@ -193,7 +193,7 @@ $(document).ready(function(){
 	
 	
 	
-	$('#example').dataTable({
+	$('table.table').dataTable({
 		"order": [[ 0, "asc" ]],
 		"language": {
 			"emptyTable":     "No hay datos cargados",
@@ -221,7 +221,7 @@ $(document).ready(function(){
 	} );
 	
 
-	$("#example").on("click",'.varborrar', function(){
+	$('table.table').on("click",'.varborrar', function(){
 		  usersid =  $(this).attr("id");
 		  if (!isNaN(usersid)) {
 			$("#idEliminar").val(usersid);
@@ -235,11 +235,11 @@ $(document).ready(function(){
 		  }
 	});//fin del boton eliminar
 	
-	$("#example").on("click",'.varmodificar', function(){
+	$('table.table').on("click",'.varmodificar', function(){
 		  usersid =  $(this).attr("id");
 		  if (!isNaN(usersid)) {
 			
-			url = "modificar.php?id=" + usersid;
+			url = "ordenes/modificar.php?id=" + usersid;
 			$(location).attr('href',url);
 		  } else {
 			alert("Error, vuelva a realizar la acción.");	
@@ -247,11 +247,12 @@ $(document).ready(function(){
 	});//fin del boton modificar
 	
 	
-	$("#example").on("click",'.varpagar', function(){
+	$('table.table').on("click",'.varpagar', function(){
+		
 		  usersid =  $(this).attr("id");
 		  if (!isNaN(usersid)) {
 			
-			url = "pagos/";
+			url = "pagos/pagar.php?id="+usersid;
 			$(location).attr('href',url);
 		  } else {
 			alert("Error, vuelva a realizar la acción.");	
@@ -259,8 +260,8 @@ $(document).ready(function(){
 	});//fin del boton pagos
 	
 	
-	$("#example").on("click",'.varpagos', function(){
-
+	$('table.table').on("click",'.varpagos', function(){
+			
 		  usersid =  $(this).attr("id");
 		  if (!isNaN(usersid)) {
 
@@ -285,7 +286,7 @@ $(document).ready(function(){
 	});//fin del boton eliminar
 	
 	
-	$("#example").on("click",'.varfinalizar', function(){
+	$('table.table').on("click",'.varfinalizar', function(){
 
 		  usersid =  $(this).attr("id");
 		  if (!isNaN(usersid)) {

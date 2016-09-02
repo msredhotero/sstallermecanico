@@ -48,15 +48,15 @@ $tituloWeb = "Gestión: Talleres";
 /////////////////////// Opciones para la creacion del formulario  /////////////////////
 $tabla 			= "dbpagos";
 
-$lblCambio	 	= array("refmarca");
-$lblreemplazo	= array("Marca");
+$lblCambio	 	= array("refordenes","fechapago");
+$lblreemplazo	= array("Orden","Fecha Pago");
 
 
-$resMarca 	= $serviciosReferencias->traerMarca();
-$cadRef 	= $serviciosFunciones->devolverSelectBoxActivo($resMarca,array(1),'',mysql_result($resResultado,0,'refmarca'));
+$resOrden 	= $serviciosReferencias->traerOrdenes();
+$cadRef 	= $serviciosFunciones->devolverSelectBoxActivo($resOrden,array(1,2,3),' - ', mysql_result($resResultado,0,'refordenes'));
 
 $refdescripcion = array(0 => $cadRef);
-$refCampo 	=  array("refmarca");
+$refCampo 	=  array("refordenes");
 //////////////////////////////////////////////  FIN de los opciones //////////////////////////
 
 

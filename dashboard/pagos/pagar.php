@@ -22,49 +22,54 @@ $serviciosReferencias 	= new ServiciosReferencias();
 $fecha = date('Y-m-d');
 
 //$resProductos = $serviciosProductos->traerProductosLimite(6);
-$resMenu = $serviciosHTML->menu(utf8_encode($_SESSION['nombre_predio']),"Modelos",$_SESSION['refroll_predio'],'');
+$resMenu = $serviciosHTML->menu(utf8_encode($_SESSION['nombre_predio']),"Pagos",$_SESSION['refroll_predio'],'');
 
 
 $id = $_GET['id'];
 
-$resResultado = $serviciosReferencias->traerModeloPorId($id);
+$resResultado = $serviciosReferencias->traerOrdenesPorId($id);
 
 
 /////////////////////// Opciones pagina ///////////////////////////////////////////////
-$singular = "Modelo";
+$singular = "Pago";
 
-$plural = "Modelos";
+$plural = "Pagos";
 
-$eliminar = "eliminarModelo";
+$eliminar = "eliminarPagos";
 
-$modificar = "modificarModelo";
-
-$idTabla = "idmodelo";
+$insertar = "insertarPagos";
 
 $tituloWeb = "Gestión: Talleres";
 //////////////////////// Fin opciones ////////////////////////////////////////////////
 
 
 /////////////////////// Opciones para la creacion del formulario  /////////////////////
-$tabla 			= "tbmodelo";
+$tabla 			= "dbpagos";
 
-$lblCambio	 	= array("refmarca");
-$lblreemplazo	= array("Marca");
+$lblCambio	 	= array("refordenes","fechapago");
+$lblreemplazo	= array("Orden","Fecha Pago");
 
 
-$resMarca 	= $serviciosReferencias->traerMarca();
-$cadRef 	= $serviciosFunciones->devolverSelectBoxActivo($resMarca,array(1),'',mysql_result($resResultado,0,'refmarca'));
+$resOrden 	= $serviciosReferencias->traerOrdenes();
+$cadRef 	= $serviciosFunciones->devolverSelectBoxActivo($resOrden,array(1,2,3),' - ', mysql_result($resResultado,0,'idorden'));
 
 $refdescripcion = array(0 => $cadRef);
-$refCampo 	=  array("refmarca");
+$refCampo 	=  array("refordenes");
 //////////////////////////////////////////////  FIN de los opciones //////////////////////////
 
+/////////////////////// Opciones para la creacion del view  patente,refmodelo,reftipovehiculo,anio/////////////////////
+$cabeceras 		= "	<th>Cliente</th>
+					<th>Vehiculo</th>
+					<th>Orden</th>
+					<th>Pago</th>
+					<th>Fecha</th>
+					<th>Estado</th>";
 
+//////////////////////////////////////////////  FIN de los opciones //////////////////////////
 
+$formulario 	= $serviciosFunciones->camposTabla($insertar ,$tabla,$lblCambio,$lblreemplazo,$refdescripcion,$refCampo);
 
-
-
-$formulario 	= $serviciosFunciones->camposTablaModificar($id, $idTabla, $modificar,$tabla,$lblCambio,$lblreemplazo,$refdescripcion,$refCampo);
+$lstCargados 	= $serviciosFunciones->camposTablaView($cabeceras,$serviciosReferencias->traerPagosPorOrden($id),6);
 
 
 if ($_SESSION['idroll_predio'] != 1) {
@@ -100,13 +105,13 @@ if ($_SESSION['idroll_predio'] != 1) {
     <link rel="stylesheet" href="../../css/jquery-ui.css">
 
     <script src="../../js/jquery-ui.js"></script>
-    
+    <link rel="stylesheet" type="text/css" href="../../css/jquery.datetimepicker.css"/>
 	<!-- Latest compiled and minified CSS -->
     <link rel="stylesheet" href="../../bootstrap/css/bootstrap.min.css"/>
 	<link href='http://fonts.googleapis.com/css?family=Lato&subset=latin,latin-ext' rel='stylesheet' type='text/css'>
     <!-- Latest compiled and minified JavaScript -->
     <script src="../../bootstrap/js/bootstrap.min.js"></script>
-
+	<link rel="stylesheet" href="../../css/chosen.css">
 	<style type="text/css">
 		
   
@@ -136,7 +141,7 @@ if ($_SESSION['idroll_predio'] != 1) {
 
     <div class="boxInfoLargo">
         <div id="headBoxInfo">
-        	<p style="color: #fff; font-size:18px; height:16px;">Modificar <?php echo $singular; ?></p>
+        	<p style="color: #fff; font-size:18px; height:16px;">Pagar Orden</p>
         	
         </div>
     	<div class="cuerpoBox">
@@ -160,11 +165,9 @@ if ($_SESSION['idroll_predio'] != 1) {
                 <div class="col-md-12">
                 <ul class="list-inline" style="margin-top:15px;">
                     <li>
-                        <button type="button" class="btn btn-warning" id="cargar" style="margin-left:0px;">Modificar</button>
+                        <button type="button" class="btn btn-primary" id="cargar" style="margin-left:0px;">Pagar</button>
                     </li>
-                    <li>
-                        <button type="button" class="btn btn-danger varborrar" id="<?php echo $id; ?>" style="margin-left:0px;">Eliminar</button>
-                    </li>
+
                     <li>
                         <button type="button" class="btn btn-default volver" style="margin-left:0px;">Volver</button>
                     </li>
@@ -175,7 +178,15 @@ if ($_SESSION['idroll_predio'] != 1) {
     	</div>
     </div>
     
-    
+    <div class="boxInfoLargo">
+        <div id="headBoxInfo">
+        	<p style="color: #fff; font-size:18px; height:16px;"><?php echo $plural; ?> Cargados</p>
+        	
+        </div>
+    	<div class="cuerpoBox">
+        	<?php echo $lstCargados; ?>
+    	</div>
+    </div>
    
 </div>
 
@@ -192,6 +203,7 @@ if ($_SESSION['idroll_predio'] != 1) {
 </div>
 <script type="text/javascript" src="../../js/jquery.dataTables.min.js"></script>
 <script src="../../bootstrap/js/dataTables.bootstrap.js"></script>
+<script src="../../js/jquery.datetimepicker.full.min.js"></script>
 
 <script type="text/javascript">
 $(document).ready(function(){
@@ -293,7 +305,7 @@ $(document).ready(function(){
                                             $(".alert").removeClass("alert-danger");
 											$(".alert").removeClass("alert-info");
                                             $(".alert").addClass("alert-success");
-                                            $(".alert").html('<strong>Ok!</strong> Se modifico exitosamente el <strong><?php echo $singular; ?></strong>. ');
+                                            $(".alert").html('<strong>Ok!</strong> Se pago exitosamente. ');
 											$(".alert").delay(3000).queue(function(){
 												/*aca lo que quiero hacer 
 												  después de los 2 segundos de retraso*/
@@ -301,8 +313,8 @@ $(document).ready(function(){
 												
 											});
 											$("#load").html('');
-											//url = "index.php";
-											//$(location).attr('href',url);
+											url = "pagar.php?id="+<?php echo $id; ?>;
+											$(location).attr('href',url);
                                             
 											
                                         } else {
@@ -320,9 +332,29 @@ $(document).ready(function(){
 			});
 		}
     });
+	
+	$('#fechapago').datetimepicker({
+	dayOfWeekStart : 1,
+	format: 'Y-m-d H:i'
+	});
+	$.datetimepicker.setLocale('es');
+	$('#fechapago').datetimepicker({step:10});
 
 });
 </script>
+<script src="../../js/chosen.jquery.js" type="text/javascript"></script>
+<script type="text/javascript">
+    var config = {
+      '.chosen-select'           : {},
+      '.chosen-select-deselect'  : {allow_single_deselect:true},
+      '.chosen-select-no-single' : {disable_search_threshold:10},
+      '.chosen-select-no-results': {no_results_text:'Oops, nothing found!'},
+      '.chosen-select-width'     : {width:"95%"}
+    }
+    for (var selector in config) {
+      $(selector).chosen(config[selector]);
+    }
+  </script>
 <?php } ?>
 </body>
 </html>
