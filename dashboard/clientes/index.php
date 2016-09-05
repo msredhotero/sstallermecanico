@@ -114,11 +114,7 @@ if ($_SESSION['refroll_predio'] != 1) {
     <!-- Latest compiled and minified JavaScript -->
     <script src="../../bootstrap/js/bootstrap.min.js"></script>
 	<link rel="stylesheet" href="../../css/bootstrap-datetimepicker.min.css">
-	<style type="text/css">
-		
-  
-		
-	</style>
+	
     
    
    <link href="../../css/perfect-scrollbar.css" rel="stylesheet">
@@ -131,9 +127,73 @@ if ($_SESSION['refroll_predio'] != 1) {
         $('#navigation').perfectScrollbar();
       });
     </script>
+    
+    <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBzxyoH5wuPmahQIZLUBjPfDuu_cUHUBQY"
+  type="text/javascript"></script>
+    <style type="text/css">
+		#map
+		{
+			width: 100%;
+			height: 600px;
+			border: 1px solid #d0d0d0;
+		}
+  
+		
+	</style>
+    <script>
+	/* AIzaSyBzxyoH5wuPmahQIZLUBjPfDuu_cUHUBQY */
+		var map;
+		var markers = [];
+	 function localize() {
+
+			
+		var mapDiv = document.getElementById('map');
+		var laPlata= {lat: -34.9205283, lng: -57.9531703};
+		var map = new google.maps.Map(mapDiv, {
+			zoom: 13,
+			center: new google.maps.LatLng(-34.9205283, -57.9531703)
+		});
+		
+		//var latitud = map.coords.latitude;
+		//var longitud = map.coords.longitude;
+		/*
+		google.maps.event.addDomListener(mapDiv, 'click', function(e) {
+			window.alert('click en el mapa');
+		});
+		*/
+		map.addListener('click', function(e) {
+			
+			if (markers.length > 0) {
+				clearMarkers();
+			}
+			$('#latitud').val(e.latLng.lat());
+			$('#longitud').val(e.latLng.lng());	
+			placeMarkerAndPanTo(e.latLng, map);
+		});
+	 }
+	 
+		function placeMarkerAndPanTo(latLng, map) {
+			var marker = new google.maps.Marker({
+				position: latLng,
+				map: map
+			});
+			markers.push(marker);
+			map.panTo(latLng);
+			
+		}
+	
+	function clearMarkers() {
+		for (var i = 0; i < markers.length; i++) {
+			markers[i].setMap(null);
+		}
+	}
+		
+
+ </script>
+ 
 </head>
 
-<body>
+<body onLoad="localize()">
 
  <?php echo $resMenu; ?>
 
@@ -150,6 +210,11 @@ if ($_SESSION['refroll_predio'] != 1) {
         	<form class="form-inline formulario" role="form">
         	<div class="row">
 			<?php echo $formulario; ?>
+            </div>
+            
+            <div class="row">
+            	<div id="map" ></div>
+
             </div>
             
             <div class='row' style="margin-left:25px; margin-right:25px;">

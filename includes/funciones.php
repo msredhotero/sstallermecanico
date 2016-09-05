@@ -238,6 +238,8 @@ class Servicios {
 		$label  = '';
 		$ocultar = array("fechacrea","fechamodi","usuacrea","usuamodi");
 		
+		$geoposicionamiento = array("latitud","longitud");
+		
 		$camposEscondido = "";
 		/* Analizar para despues */
 		/*if (count($refencias) > 0) {
@@ -279,18 +281,36 @@ class Servicios {
 				
 				if ($row[3] != 'PRI') {
 					if (strpos($row[1],"decimal") !== false) {
-						$form	=	$form.'
 						
-						<div class="form-group col-md-6" style="display:'.$lblOculta.'">
-							<label for="'.$label.'" class="control-label" style="text-align:left">'.ucwords($label).'</label>
-							<div class="input-group col-md-12">
-								<span class="input-group-addon">$</span>
-								<input type="text" class="form-control" id="'.strtolower($row[0]).'" name="'.strtolower($row[0]).'" value="0" required>
-								<span class="input-group-addon">.00</span>
+						if (in_array($row[0],$geoposicionamiento)) {
+							$form	=	$form.'
+							
+							<div class="form-group col-md-6" style="display:'.$lblOculta.'">
+								<label for="'.$label.'" class="control-label" style="text-align:left">'.ucwords($label).'</label>
+								<div class="input-group col-md-12">
+									<span class="input-group-addon"><span class="glyphicon glyphicon-map-marker"></span></span>
+									<input type="text" class="form-control" id="'.strtolower($row[0]).'" name="'.strtolower($row[0]).'" value="0" required>
+									
+								</div>
 							</div>
-						</div>
+							
+							';
+
+						} else {
 						
-						';
+							$form	=	$form.'
+							
+							<div class="form-group col-md-6" style="display:'.$lblOculta.'">
+								<label for="'.$label.'" class="control-label" style="text-align:left">'.ucwords($label).'</label>
+								<div class="input-group col-md-12">
+									<span class="input-group-addon">$</span>
+									<input type="text" class="form-control" id="'.strtolower($row[0]).'" name="'.strtolower($row[0]).'" value="0" required>
+									<span class="input-group-addon">.00</span>
+								</div>
+							</div>
+							
+							';
+						}
 					} else {
 						if ( in_array($row[0],$refCampo) ) {
 							
