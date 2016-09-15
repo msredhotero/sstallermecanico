@@ -966,7 +966,155 @@ return $res;
 /* Fin */
 /* /* Fin de la Tabla: dbpagos*/
 
+/* PARA Configuracion */
 
+function insertarConfiguracion($reftipoidentificaciontributaria,$numero,$razonsocial,$direccion,$ciudad,$telefono,$codigopostal) { 
+$sql = "insert into tbconfiguracion(idconfiguracion,reftipoidentificaciontributaria,numero,razonsocial,direccion,ciudad,telefono,codigopostal) 
+values ('',".$reftipoidentificaciontributaria.",'".utf8_decode($numero)."','".utf8_decode($razonsocial)."','".utf8_decode($direccion)."','".utf8_decode($ciudad)."','".utf8_decode($telefono)."','".utf8_decode($codigopostal)."')";
+$res = $this->query($sql,1); 
+return $res; 
+} 
+
+
+function modificarConfiguracion($id,$reftipoidentificaciontributaria,$numero,$razonsocial,$direccion,$ciudad,$telefono,$codigopostal) { 
+$sql = "update tbconfiguracion 
+set 
+reftipoidentificaciontributaria = ".$reftipoidentificaciontributaria.",numero = '".utf8_decode($numero)."',razonsocial = '".utf8_decode($razonsocial)."',direccion = '".utf8_decode($direccion)."',ciudad = '".utf8_decode($ciudad)."',telefono = '".utf8_decode($telefono)."',codigopostal = '".utf8_decode($codigopostal)."' 
+where idconfiguracion =".$id; 
+$res = $this->query($sql,0); 
+return $res; 
+} 
+
+
+function eliminarConfiguracion($id) { 
+$sql = "delete from tbconfiguracion where idconfiguracion =".$id; 
+$res = $this->query($sql,0); 
+return $res; 
+} 
+
+
+function traerConfiguracion() { 
+$sql = "select 
+c.idconfiguracion,
+tip.tipoidentificaciontributaria,
+c.numero,
+c.razonsocial,
+c.direccion,
+c.ciudad,
+c.telefono,
+c.codigopostal
+from tbconfiguracion c 
+inner join tbtipoidentificaciontributaria tip ON tip.idtipoidentificaciontributaria = c.reftipoidentificaciontributaria 
+order by 1"; 
+$res = $this->query($sql,0); 
+return $res; 
+} 
+
+
+function traerConfiguracionPorId($id) { 
+$sql = "select idconfiguracion,reftipoidentificaciontributaria,numero,razonsocial,direccion,ciudad,telefono,codigopostal from tbconfiguracion where idconfiguracion =".$id; 
+$res = $this->query($sql,0); 
+return $res; 
+} 
+
+/* Fin */
+/* /* Fin de la Tabla: tbconfiguracion*/
+    
+    
+/* PARA Tipoidentificaciontributaria */
+
+function insertarTipoidentificaciontributaria($tipoidentificaciontributaria) { 
+$sql = "insert into tbtipoidentificaciontributaria(idtipoidentificaciontributaria,tipoidentificaciontributaria) 
+values ('','".utf8_decode($tipoidentificaciontributaria)."')"; 
+$res = $this->query($sql,1); 
+return $res; 
+} 
+
+
+function modificarTipoidentificaciontributaria($id,$tipoidentificaciontributaria) { 
+$sql = "update tbtipoidentificaciontributaria 
+set 
+tipoidentificaciontributaria = '".utf8_decode($tipoidentificaciontributaria)."' 
+where idtipoidentificaciontributaria =".$id; 
+$res = $this->query($sql,0); 
+return $res; 
+} 
+
+
+function eliminarTipoidentificaciontributaria($id) { 
+$sql = "delete from tbtipoidentificaciontributaria where idtipoidentificaciontributaria =".$id; 
+$res = $this->query($sql,0); 
+return $res; 
+} 
+
+
+function traerTipoidentificaciontributaria() { 
+$sql = "select 
+t.idtipoidentificaciontributaria,
+t.tipoidentificaciontributaria
+from tbtipoidentificaciontributaria t 
+order by 1"; 
+$res = $this->query($sql,0); 
+return $res; 
+} 
+
+
+function traerTipoidentificaciontributariaPorId($id) { 
+$sql = "select idtipoidentificaciontributaria,tipoidentificaciontributaria from tbtipoidentificaciontributaria where idtipoidentificaciontributaria =".$id; 
+$res = $this->query($sql,0); 
+return $res; 
+} 
+
+/* Fin */
+/* /* Fin de la Tabla: tbtipoidentificaciontributaria*/
+
+
+/* PARA Tipopago */
+
+function insertarTipopago($tipopago) { 
+$sql = "insert into tbtipopago(idtipopago,tipopago) 
+values ('','".utf8_decode($tipopago)."')"; 
+$res = $this->query($sql,1); 
+return $res; 
+} 
+
+
+function modificarTipopago($id,$tipopago) { 
+$sql = "update tbtipopago 
+set 
+tipopago = '".utf8_decode($tipopago)."' 
+where idtipopago =".$id; 
+$res = $this->query($sql,0); 
+return $res; 
+} 
+
+
+function eliminarTipopago($id) { 
+$sql = "delete from tbtipopago where idtipopago =".$id; 
+$res = $this->query($sql,0); 
+return $res; 
+} 
+
+
+function traerTipopago() { 
+$sql = "select 
+t.idtipopago,
+t.tipopago
+from tbtipopago t 
+order by 1"; 
+$res = $this->query($sql,0); 
+return $res; 
+} 
+
+
+function traerTipopagoPorId($id) { 
+$sql = "select idtipopago,tipopago from tbtipopago where idtipopago =".$id; 
+$res = $this->query($sql,0); 
+return $res; 
+} 
+
+/* Fin */
+/* /* Fin de la Tabla: tbtipopago*/
 
 function query($sql,$accion) {
 		

@@ -22,46 +22,47 @@ $serviciosReferencias 	= new ServiciosReferencias();
 $fecha = date('Y-m-d');
 
 //$resProductos = $serviciosProductos->traerProductosLimite(6);
-$resMenu = $serviciosHTML->menu(utf8_encode($_SESSION['nombre_predio']),"Clientes",$_SESSION['refroll_predio'],'');
+$resMenu = $serviciosHTML->menu(utf8_encode($_SESSION['nombre_predio']),"Configuracion",$_SESSION['refroll_predio'],'');
 
 
 /////////////////////// Opciones pagina ///////////////////////////////////////////////
-$singular = "Cliente";
+$singular = "Configuracion";
 
-$plural = "Clientes";
+$plural = "Configuraciones";
 
-$eliminar = "eliminarClientes";
+$eliminar = "eliminarConfiguracion";
 
-$insertar = "insertarClientes";
+$insertar = "insertarConfiguracion";
 
 $tituloWeb = "Gestión: Talleres";
 //////////////////////// Fin opciones ////////////////////////////////////////////////
 
 
 /////////////////////// Opciones para la creacion del formulario  /////////////////////
-$tabla 			= "dbclientes";
+$tabla 			= "tbconfiguracion";
 
-$lblCambio	 	= array("nrodocumento","fechanacimiento","telefono","direccion");
-$lblreemplazo	= array("Nro Documento","Fecha Nacimiento","Teléfono","dirección");
+$lblCambio	 	= array("reftipoidentificaciontributaria","numero","razonsocial","direccion","telefono","codigopostal");
+$lblreemplazo	= array("Identificación Tributaria","Número","Razon Social","Dirección","Teléfono","Codigo Postal");
 
 
-$cadRef 	= '';
+$resOrden 	= $serviciosReferencias->traerTipoidentificaciontributaria();
+$cadRef 	= $serviciosFunciones->devolverSelectBox($resOrden,array(1),'');
 
-$refdescripcion = array();
-$refCampo 	=  array();
+$refdescripcion = array(0 => $cadRef);
+$refCampo 	=  array("reftipoidentificaciontributaria");
 //////////////////////////////////////////////  FIN de los opciones //////////////////////////
 
 
 
 
-/////////////////////// Opciones para la creacion del view  apellido,nombre,nrodocumento,fechanacimiento,direccion,telefono,email/////////////////////
-$cabeceras 		= "	<th>Apellido</th>
-					<th>Nombre</th>
-					<th>Nro Documento</th>
-					<th>Fecha Nacimiento</th>
+/////////////////////// Opciones para la creacion del view  patente,refmodelo,reftipovehiculo,anio/////////////////////
+$cabeceras 		= "	<th>Identif.Tributaria</th>
+					<th>Nº</th>
+					<th>Razon Social</th>
 					<th>Dirección</th>
+					<th>Ciudad</th>
 					<th>Teléfono</th>
-					<th>Email</th>";
+                    <th>Cod.Postal</th>";
 
 //////////////////////////////////////////////  FIN de los opciones //////////////////////////
 
@@ -70,7 +71,7 @@ $cabeceras 		= "	<th>Apellido</th>
 
 $formulario 	= $serviciosFunciones->camposTabla($insertar ,$tabla,$lblCambio,$lblreemplazo,$refdescripcion,$refCampo);
 
-$lstCargados 	= $serviciosFunciones->camposTablaView($cabeceras,$serviciosReferencias->traerClientes(),7);
+$lstCargados 	= $serviciosFunciones->camposTablaView($cabeceras,$serviciosReferencias->traerConfiguracion(),7);
 
 
 
@@ -110,14 +111,20 @@ if ($_SESSION['refroll_predio'] != 1) {
     
 	<!-- Latest compiled and minified CSS -->
     <link rel="stylesheet" href="../../bootstrap/css/bootstrap.min.css"/>
+    <link rel="stylesheet" type="text/css" href="../../css/jquery.datetimepicker.css"/>
 	<link href='http://fonts.googleapis.com/css?family=Lato&subset=latin,latin-ext' rel='stylesheet' type='text/css'>
     <!-- Latest compiled and minified JavaScript -->
     <script src="../../bootstrap/js/bootstrap.min.js"></script>
-	<link rel="stylesheet" href="../../css/bootstrap-datetimepicker.min.css">
-	
+
+	<style type="text/css">
+		
+  
+		
+	</style>
     
    
    <link href="../../css/perfect-scrollbar.css" rel="stylesheet">
+   <link rel="stylesheet" href="../../css/chosen.css">
       <!--<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>-->
       <script src="../../js/jquery.mousewheel.js"></script>
       <script src="../../js/perfect-scrollbar.js"></script>
@@ -127,73 +134,9 @@ if ($_SESSION['refroll_predio'] != 1) {
         $('#navigation').perfectScrollbar();
       });
     </script>
-    
-    <!--<script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBzxyoH5wuPmahQIZLUBjPfDuu_cUHUBQY"
-  type="text/javascript"></script>
-    <style type="text/css">
-		#map
-		{
-			width: 100%;
-			height: 600px;
-			border: 1px solid #d0d0d0;
-		}
-  
-		
-	</style>
-    <script>
-	/* AIzaSyBzxyoH5wuPmahQIZLUBjPfDuu_cUHUBQY */
-		var map;
-		var markers = [];
-	 function localize() {
-
-			
-		var mapDiv = document.getElementById('map');
-		var laPlata= {lat: -34.9205283, lng: -57.9531703};
-		var map = new google.maps.Map(mapDiv, {
-			zoom: 13,
-			center: new google.maps.LatLng(-34.9205283, -57.9531703)
-		});
-		
-		//var latitud = map.coords.latitude;
-		//var longitud = map.coords.longitude;
-		/*
-		google.maps.event.addDomListener(mapDiv, 'click', function(e) {
-			window.alert('click en el mapa');
-		});
-		*/
-		map.addListener('click', function(e) {
-			
-			if (markers.length > 0) {
-				clearMarkers();
-			}
-			$('#latitud').val(e.latLng.lat());
-			$('#longitud').val(e.latLng.lng());	
-			placeMarkerAndPanTo(e.latLng, map);
-		});
-	 }
-	 
-		function placeMarkerAndPanTo(latLng, map) {
-			var marker = new google.maps.Marker({
-				position: latLng,
-				map: map
-			});
-			markers.push(marker);
-			map.panTo(latLng);
-			
-		}
-	
-	function clearMarkers() {
-		for (var i = 0; i < markers.length; i++) {
-			markers[i].setMap(null);
-		}
-	}
-		
-
- </script>-->
- 
 </head>
 
-<body onLoad="localize()">
+<body>
 
  <?php echo $resMenu; ?>
 
@@ -211,12 +154,8 @@ if ($_SESSION['refroll_predio'] != 1) {
         	<div class="row">
 			<?php echo $formulario; ?>
             </div>
-            <!--
-            <div class="row">
-            	<div id="map" ></div>
 
-            </div>
-            -->
+            
             <div class='row' style="margin-left:25px; margin-right:25px;">
                 <div class='alert'>
                 
@@ -268,12 +207,13 @@ if ($_SESSION['refroll_predio'] != 1) {
 </div>
 <script type="text/javascript" src="../../js/jquery.dataTables.min.js"></script>
 <script src="../../bootstrap/js/dataTables.bootstrap.js"></script>
-
-<script src="../../js/bootstrap-datetimepicker.min.js"></script>
-<script src="../../js/bootstrap-datetimepicker.es.js"></script>
+<script src="../../js/jquery.datetimepicker.full.min.js"></script>
 
 <script type="text/javascript">
 $(document).ready(function(){
+	
+	$('#activo').prop('checked',true);
+	
 	$('#example').dataTable({
 		"order": [[ 0, "asc" ]],
 		"language": {
@@ -430,23 +370,29 @@ $(document).ready(function(){
 			});
 		}
     });
+	
+	$('#fechapago').datetimepicker({
+	dayOfWeekStart : 1,
+	format: 'Y-m-d H:i'
+	});
+	$.datetimepicker.setLocale('es');
+	$('#fechapago').datetimepicker({step:10});
 
 });
 </script>
-
+<script src="../../js/chosen.jquery.js" type="text/javascript"></script>
 <script type="text/javascript">
-$('.form_date').datetimepicker({
-	language:  'es',
-	weekStart: 1,
-	todayBtn:  1,
-	autoclose: 1,
-	todayHighlight: 1,
-	startView: 2,
-	minView: 2,
-	forceParse: 0,
-	format: 'dd/mm/yyyy'
-});
-</script>
+    var config = {
+      '.chosen-select'           : {},
+      '.chosen-select-deselect'  : {allow_single_deselect:true},
+      '.chosen-select-no-single' : {disable_search_threshold:10},
+      '.chosen-select-no-results': {no_results_text:'Oops, nothing found!'},
+      '.chosen-select-width'     : {width:"95%"}
+    }
+    for (var selector in config) {
+      $(selector).chosen(config[selector]);
+    }
+  </script>
 <?php } ?>
 </body>
 </html>

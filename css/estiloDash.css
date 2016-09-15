@@ -605,6 +605,19 @@ padding-bottom: 10px;
 		   background-size: 25px 50px;
 		   background-size: 50% 50%;
 		}
+
+        .icoconfiguracion {
+			background:url(../imagenes/iconmenu/configuracion.png) no-repeat;
+			background-position: center center;
+			width:40px;
+			height:40px;
+			float:left;
+			margin-right:10px;
+			margin-top:-4px;
+			/* OKAY */
+		   background-size: 25px 50px;
+		   background-size: 50% 50%;
+		}
 		
 		.icosalir {
 			background:url(../imagenes/iconmenu/salir.png) no-repeat;

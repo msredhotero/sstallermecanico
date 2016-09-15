@@ -162,6 +162,33 @@ break;
 case 'traerPagosPorOrden':
 traerPagosPorOrden($serviciosReferencias);
 break; 
+case 'insertarConfiguracion': 
+insertarConfiguracion($serviciosReferencias); 
+break; 
+case 'modificarConfiguracion': 
+modificarConfiguracion($serviciosReferencias); 
+break; 
+case 'eliminarConfiguracion': 
+eliminarConfiguracion($serviciosReferencias); 
+break; 
+case 'insertarTipoidentificaciontributaria': 
+insertarTipoidentificaciontributaria($serviciosReferencias); 
+break; 
+case 'modificarTipoidentificaciontributaria': 
+modificarTipoidentificaciontributaria($serviciosReferencias); 
+break; 
+case 'eliminarTipoidentificaciontributaria': 
+eliminarTipoidentificaciontributaria($serviciosReferencias); 
+break; 
+case 'insertarTipopago': 
+insertarTipopago($serviciosReferencias); 
+break; 
+case 'modificarTipopago': 
+modificarTipopago($serviciosReferencias); 
+break; 
+case 'eliminarTipopago': 
+eliminarTipopago($serviciosReferencias); 
+break; 
 }
 
 /* Fin */
@@ -695,6 +722,93 @@ function traerPagosPorOrden($serviciosReferencias) {
 	}
 	echo $cadRef;
 }
+
+function insertarConfiguracion($serviciosReferencias) { 
+$reftipoidentificaciontributaria = $_POST['reftipoidentificaciontributaria']; 
+$numero = $_POST['numero']; 
+$razonsocial = $_POST['razonsocial']; 
+$direccion = $_POST['direccion']; 
+$ciudad = $_POST['ciudad']; 
+$telefono = $_POST['telefono']; 
+$codigopostal = $_POST['codigopostal']; 
+$res = $serviciosReferencias->insertarConfiguracion($reftipoidentificaciontributaria,$numero,$razonsocial,$direccion,$ciudad,$telefono,$codigopostal); 
+if ((integer)$res > 0) { 
+echo ''; 
+} else { 
+echo 'Huvo un error al insertar datos';	
+} 
+} 
+function modificarConfiguracion($serviciosReferencias) { 
+$id = $_POST['id']; 
+$reftipoidentificaciontributaria = $_POST['reftipoidentificaciontributaria']; 
+$numero = $_POST['numero']; 
+$razonsocial = $_POST['razonsocial']; 
+$direccion = $_POST['direccion']; 
+$ciudad = $_POST['ciudad']; 
+$telefono = $_POST['telefono']; 
+$codigopostal = $_POST['codigopostal']; 
+$res = $serviciosReferencias->modificarConfiguracion($id,$reftipoidentificaciontributaria,$numero,$razonsocial,$direccion,$ciudad,$telefono,$codigopostal); 
+if ($res == true) { 
+echo ''; 
+} else { 
+echo 'Huvo un error al modificar datos'; 
+} 
+} 
+function eliminarConfiguracion($serviciosReferencias) { 
+$id = $_POST['id']; 
+$res = $serviciosReferencias->eliminarConfiguracion($id); 
+echo $res; 
+} 
+
+
+function insertarTipoidentificaciontributaria($serviciosReferencias) { 
+$tipoidentificaciontributaria = $_POST['tipoidentificaciontributaria']; 
+$res = $serviciosReferencias->insertarTipoidentificaciontributaria($tipoidentificaciontributaria); 
+if ((integer)$res > 0) { 
+echo ''; 
+} else { 
+echo 'Huvo un error al insertar datos';	
+} 
+} 
+function modificarTipoidentificaciontributaria($serviciosReferencias) { 
+$id = $_POST['id']; 
+$tipoidentificaciontributaria = $_POST['tipoidentificaciontributaria']; 
+$res = $serviciosReferencias->modificarTipoidentificaciontributaria($id,$tipoidentificaciontributaria); 
+if ($res == true) { 
+echo ''; 
+} else { 
+echo 'Huvo un error al modificar datos'; 
+} 
+} 
+function eliminarTipoidentificaciontributaria($serviciosReferencias) { 
+$id = $_POST['id']; 
+$res = $serviciosReferencias->eliminarTipoidentificaciontributaria($id); 
+echo $res; 
+} 
+function insertarTipopago($serviciosReferencias) { 
+$tipopago = $_POST['tipopago']; 
+$res = $serviciosReferencias->insertarTipopago($tipopago); 
+if ((integer)$res > 0) { 
+echo ''; 
+} else { 
+echo 'Huvo un error al insertar datos';	
+} 
+} 
+function modificarTipopago($serviciosReferencias) { 
+$id = $_POST['id']; 
+$tipopago = $_POST['tipopago']; 
+$res = $serviciosReferencias->modificarTipopago($id,$tipopago); 
+if ($res == true) { 
+echo ''; 
+} else { 
+echo 'Huvo un error al modificar datos'; 
+} 
+} 
+function eliminarTipopago($serviciosReferencias) { 
+$id = $_POST['id']; 
+$res = $serviciosReferencias->eliminarTipopago($id); 
+echo $res; 
+} 
 
 ////////////////////////// FIN DE TRAER DATOS ////////////////////////////////////////////////////////////
 
