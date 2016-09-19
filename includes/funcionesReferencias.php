@@ -19,7 +19,19 @@ function GUID()
     return sprintf('%04X%04X-%04X-%04X-%04X-%04X%04X%04X', mt_rand(0, 65535), mt_rand(0, 65535), mt_rand(0, 65535), mt_rand(16384, 20479), mt_rand(32768, 49151), mt_rand(0, 65535), mt_rand(0, 65535), mt_rand(0, 65535));
 }
 
-
+function existencia($id,$tabla,$campo,$busquedas,$esCadena) {
+	if ($esCadena == 1) {
+		$sql = "select ".$id." from ".$tabla." where ".$campo." = '".str_replace(' ','',trim($busquedas))."'";	
+	} else {
+		$sql = "select ".$id." from ".$tabla." where ".$campo." = ".$busquedas;	
+	}
+	
+	$res = $this->query($sql,0);
+	if (mysql_num_rows($res)>0) {
+		return true;	
+	}
+	return false;
+}
 
 
 
