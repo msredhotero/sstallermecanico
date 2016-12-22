@@ -338,14 +338,9 @@ function insertarOrdenes($serviciosReferencias) {
 	$res = $serviciosReferencias->insertarOrdenes($numero,$refclientevehiculos,$fechacrea,$fechamodi,$usuacrea,$usuamodi,$detallereparacion,$refestados,$precio,$anticipo);
 	
 	if ((integer)$res > 0) {
-		$resUser = $serviciosReferencias->traerEmpleados();
-		$cad = 'user';
-		while ($rowFS = mysql_fetch_array($resUser)) {
-			if (isset($_POST[$cad.$rowFS[0]])) {
-				$serviciosReferencias->insertarOrdenesresponsables($res,$rowFS[0]);
-			}
-		}
-		
+
+		$serviciosReferencias->insertarOrdenesresponsables($res);
+
 		echo '';
 	} else {
 		echo 'hubo un error al insertar datos';
@@ -369,13 +364,9 @@ function modificarOrdenes($serviciosReferencias) {
 	if ($res == true) {
 		
 		$serviciosReferencias->eliminarOrdenesresponsablesPorOrden($id);
-			$resUser = $serviciosReferencias->traerEmpleados();
-			$cad = 'user';
-			while ($rowFS = mysql_fetch_array($resUser)) {
-				if (isset($_POST[$cad.$rowFS[0]])) {
-					$serviciosReferencias->insertarOrdenesresponsables($res,$rowFS[0]);
-				}
-			}
+
+		$serviciosReferencias->insertarOrdenesresponsables($res);
+
 		echo '';
 	} else {
 		echo 'hubo un error al modificar datos';

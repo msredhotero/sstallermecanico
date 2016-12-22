@@ -57,8 +57,7 @@ $refCampo 	=  array("refmarca");
 
 /////////////////////// Opciones para la creacion del view  patente,refmodelo,reftipovehiculo,anio/////////////////////
 $cabeceras 		= "	<th>Modelo</th>
-					<th>Marca</th>
-					<th>Activo</th>";
+					<th>Marca</th>";
 
 //////////////////////////////////////////////  FIN de los opciones //////////////////////////
 
@@ -67,7 +66,7 @@ $cabeceras 		= "	<th>Modelo</th>
 
 $formulario 	= $serviciosFunciones->camposTabla($insertar ,$tabla,$lblCambio,$lblreemplazo,$refdescripcion,$refCampo);
 
-$lstCargados 	= $serviciosFunciones->camposTablaView($cabeceras,$serviciosReferencias->traerModelo(),3);
+$lstCargados 	= $serviciosFunciones->camposTablaView($cabeceras,$serviciosReferencias->traerModelo(),2);
 
 
 
@@ -205,7 +204,6 @@ if ($_SESSION['refroll_predio'] != 1) {
 <script type="text/javascript">
 $(document).ready(function(){
 	
-	$('#activo').prop('checked',true);
 	
 	$('#example').dataTable({
 		"order": [[ 0, "asc" ]],

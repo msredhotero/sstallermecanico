@@ -65,36 +65,6 @@ $refCampo 	=  array("refestados","refclientevehiculos");
 //////////////////////////////////////////////  FIN de los opciones //////////////////////////
 
 
-$resUser = $serviciosReferencias->traerEmpleados();
-
-$resUserProyect = $serviciosReferencias->traerResponsablesPorOrden($id);
-
-
-	while ($subrow = mysql_fetch_array($resUserProyect)) {
-			$arrayFS[] = $subrow;
-	}
-
-
-
-$cadUser = '<ul class="list-inline">';
-while ($rowFS = mysql_fetch_array($resUser)) {
-	$check = '';
-	if (mysql_num_rows($resUserProyect)>0) {
-		foreach ($arrayFS as $item) {
-			if (stripslashes($item['refempleados']) == $rowFS[0]) {
-				$check = 'checked';	
-			}
-		}
-	}
-	$cadUser = $cadUser."<li style='width:120px;'>".'<input id="user'.$rowFS[0].'" '.$check.' class="form-control" type="checkbox" required="" style="width:50px;" name="user'.$rowFS[0].'"><p>'.utf8_encode($rowFS['apellido']).", ".utf8_encode($rowFS['nombre']).'</p>'."</li>";
-
-
-}
-
-
-
-$cadUser = $cadUser."</ul>";
-
 
 
 $formulario 	= $serviciosFunciones->camposTablaModificar($id, $idTabla, $modificar,$tabla,$lblCambio,$lblreemplazo,$refdescripcion,$refCampo);
@@ -179,14 +149,6 @@ if ($_SESSION['idroll_predio'] != 1) {
 			<?php echo $formulario; ?>
             </div>
             
-            <div class="row">
-            	<div class="form-group col-md-12">
-                	<label class="control-label" style="text-align:left" for="fechas">Select Users</label>
-                    <div class="input-group col-md-12">
-                    	<?php echo $cadUser; ?>
-                    </div>
-                </div>
-            </div>
             
             <div class='row' style="margin-left:25px; margin-right:25px;">
                 <div class='alert'>

@@ -251,7 +251,7 @@ concat(ma.marca,' ',mo.modelo,' - ',ve.patente) as vehiculo,
 DATE_FORMAT(o.fechacrea,'%Y-%m-%d') as fecha,
 o.detallereparacion,
 o.precio,
-(o.precio - coalesce(pp.monto,0)) as saldo,
+(o.precio - coalesce(pp.monto,0) - coalesce(o.anticipo,0)) as saldo,
 est.estado,
 o.fechamodi,
 o.usuacrea,
@@ -265,7 +265,7 @@ inner join dbvehiculos ve ON ve.idvehiculo = cli.refvehiculos
 inner join tbmodelo mo ON mo.idmodelo = ve.refmodelo
 inner join tbmarca ma ON ma.idmarca = mo.refmarca
 inner join tbestados est ON est.idestado = o.refestados
-left join (select sum(pago) as monto,refordenes from dbpagos) pp ON pp.refordenes = o.idorden
+left join (select sum(pago) as monto,refordenes from dbpagos group by refordenes) pp ON pp.refordenes = o.idorden
 where	est.estado != 'Finalizado'
 order by 1";
 $res = $this->query($sql,0);
@@ -283,7 +283,7 @@ concat(ma.marca,' ',mo.modelo,' - ',ve.patente) as vehiculo,
 DATE_FORMAT(o.fechacrea,'%Y-%m-%d') as fecha,
 o.detallereparacion,
 o.precio,
-(o.precio - coalesce(pp.monto,0)) as saldo,
+(o.precio - coalesce(pp.monto,0) - coalesce(o.anticipo,0)) as saldo,
 est.estado,
 o.fechamodi,
 o.usuacrea,
@@ -297,7 +297,7 @@ inner join dbvehiculos ve ON ve.idvehiculo = cli.refvehiculos
 inner join tbmodelo mo ON mo.idmodelo = ve.refmodelo
 inner join tbmarca ma ON ma.idmarca = mo.refmarca
 inner join tbestados est ON est.idestado = o.refestados
-left join (select sum(pago) as monto,refordenes from dbpagos) pp ON pp.refordenes = o.idorden
+left join (select sum(pago) as monto,refordenes from dbpagos group by refordenes) pp ON pp.refordenes = o.idorden
 where	est.estado = 'Finalizado' and coalesce(pp.monto,0) < o.precio
 order by 1";
 $res = $this->query($sql,0);
@@ -554,18 +554,18 @@ return $res;
 
 /* PARA Marca */
 
-function insertarMarca($marca,$activo) {
-$sql = "insert into tbmarca(idmarca,marca,activo)
+function insertarMarca($marca) {
+$sql = "insert into tbmarca(idmarca,marca)
 values ('','".utf8_decode($marca)."',".$activo.")";
 $res = $this->query($sql,1);
 return $res;
 }
 
 
-function modificarMarca($id,$marca,$activo) {
+function modificarMarca($id,$marca) {
 $sql = "update tbmarca
 set
-marca = '".utf8_decode($marca)."',activo = ".$activo."
+marca = '".utf8_decode($marca)."'
 where idmarca =".$id;
 $res = $this->query($sql,0);
 return $res;
@@ -582,8 +582,7 @@ return $res;
 function traerMarca() {
 $sql = "select
 m.idmarca,
-m.marca,
-(case when m.activo = 1 then 'Si' else 'No' end) as activo
+m.marca
 from tbmarca m
 order by 1";
 $res = $this->query($sql,0);
@@ -592,7 +591,7 @@ return $res;
 
 
 function traerMarcaPorId($id) {
-$sql = "select idmarca,marca,activo from tbmarca where idmarca =".$id;
+$sql = "select idmarca,marca from tbmarca where idmarca =".$id;
 $res = $this->query($sql,0);
 return $res;
 }
@@ -603,18 +602,18 @@ return $res;
 
 /* PARA Modelo */
 
-function insertarModelo($modelo,$refmarca,$activo) {
-$sql = "insert into tbmodelo(idmodelo,modelo,refmarca,activo)
-values ('','".utf8_decode($modelo)."',".$refmarca.",".$activo.")";
+function insertarModelo($modelo,$refmarca) {
+$sql = "insert into tbmodelo(idmodelo,modelo,refmarca)
+values ('','".utf8_decode($modelo)."',".$refmarca.")";
 $res = $this->query($sql,1);
 return $res;
 }
 
 
-function modificarModelo($id,$modelo,$refmarca,$activo) {
+function modificarModelo($id,$modelo,$refmarca) {
 $sql = "update tbmodelo
 set
-modelo = '".utf8_decode($modelo)."',refmarca = ".$refmarca.",activo = ".$activo."
+modelo = '".utf8_decode($modelo)."',refmarca = ".$refmarca."
 where idmodelo =".$id;
 $res = $this->query($sql,0);
 return $res;
@@ -632,8 +631,7 @@ function traerModelo() {
 $sql = "select
 m.idmodelo,
 m.modelo,
-mar.marca,
-(case when m.activo = 1 then 'Si' else 'No' end) as activo
+mar.marca
 from tbmodelo m
 inner join tbmarca mar ON mar.idmarca = m.refmarca
 order by 1";
@@ -643,7 +641,7 @@ return $res;
 
 
 function traerModeloPorId($id) {
-$sql = "select idmodelo,modelo,refmarca,activo from tbmodelo where idmodelo =".$id;
+$sql = "select idmodelo,modelo,refmarca from tbmodelo where idmodelo =".$id;
 $res = $this->query($sql,0);
 return $res;
 }
@@ -808,18 +806,18 @@ return $res;
 
 /* PARA Ordenesresponsables */
 
-function insertarOrdenesresponsables($refordenes,$refempleados) {
-$sql = "insert into dbordenesresponsables(idordenresponsables,refordenes,refempleados)
-values ('',".$refordenes.",".$refempleados.")";
+function insertarOrdenesresponsables($refordenes) {
+$sql = "insert into dbordenesresponsables(idordenresponsables,refordenes)
+values ('',".$refordenes.")";
 $res = $this->query($sql,1);
 return $res;
 }
 
 
-function modificarOrdenesresponsables($id,$refordenes,$refempleados) {
+function modificarOrdenesresponsables($id,$refordenes) {
 $sql = "update dbordenesresponsables
 set
-refordenes = ".$refordenes.",refempleados = ".$refempleados."
+refordenes = ".$refordenes."
 where idordenresponsables =".$id;
 $res = $this->query($sql,0);
 return $res;
@@ -842,40 +840,20 @@ return $res;
 function traerOrdenesresponsables() {
 $sql = "select
 o.idordenresponsables,
-o.refordenes,
-o.refempleados
+o.refordenes
 from dbordenesresponsables o
 inner join dbordenes ord ON ord.idorden = o.refordenes
 inner join dbclientevehiculos cl ON cl.idclientevehiculo = ord.refclientevehiculos
 inner join tbestados es ON es.idestado = ord.refestados
-inner join dbempleados emp ON emp.idempleado = o.refempleados
 order by 1";
 $res = $this->query($sql,0);
 return $res;
 }
 
-function traerResponsablesPorOrden($orden) {
-	$sql = "select
-o.idordenresponsables,
-o.refordenes,
-o.refempleados,
-emp.apellido,
-emp.nombre,
-emp.nrodocumento,
-emp.cuil
-from dbordenesresponsables o
-inner join dbordenes ord ON ord.idorden = o.refordenes
-inner join dbclientevehiculos cl ON cl.idclientevehiculo = ord.refclientevehiculos
-inner join tbestados es ON es.idestado = ord.refestados
-inner join dbempleados emp ON emp.idempleado = o.refempleados
-where o.refordenes = ".$orden."
-order by 1";
-$res = $this->query($sql,0);
-return $res;
-}
+
 
 function traerOrdenesresponsablesPorId($id) {
-$sql = "select idordenresponsables,refordenes,refempleados from dbordenesresponsables where idordenresponsables =".$id;
+$sql = "select idordenresponsables,refordenes from dbordenesresponsables where idordenresponsables =".$id;
 $res = $this->query($sql,0);
 return $res;
 }

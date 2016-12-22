@@ -53,14 +53,6 @@ $cadRef2 	= $serviciosFunciones->devolverSelectBox($resVehiculos,array(1,2),' - 
 
 $nroOrden	= $serviciosReferencias->generarNroOrden();
 
-$resEmp 	= $serviciosReferencias->traerEmpleados();
-
-$cadRefR = '<ul class="list-inline">';
-while ($rowFS = mysql_fetch_array($resEmp)) {
-	$cadRefR = $cadRefR."<li>".'<input id="user'.$rowFS[0].'" class="form-control" type="checkbox" required="" style="width:50px;" name="user'.$rowFS[0].'"><p>'.utf8_encode($rowFS[1]).'</p>'."</li>";
-}
-$cadRefR = $cadRefR."</ul>";
-
 
 $refdescripcion = array(0 => $cadRef,1 => $cadRef2);
 $refCampo 	=  array("refestados","refclientevehiculos");
@@ -168,15 +160,7 @@ if ($_SESSION['refroll_predio'] != 1) {
         	<div class="row">
 			<?php echo $formulario; ?>
             </div>
-			
-            <div class="row">
-            	<div class="form-group col-md-12">
-                	<label class="control-label" style="text-align:left" for="fechas">Seleccione los Responsables</label>
-                    <div class="input-group col-md-12">
-                    	<?php echo $cadRefR; ?>
-                    </div>
-                </div>
-            </div>
+
             
             <div class='row' style="margin-left:25px; margin-right:25px;">
                 <div class='alert'>
